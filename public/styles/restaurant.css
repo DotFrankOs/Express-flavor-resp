@@ -1,0 +1,391 @@
+/* styles/restaurant.css (NUEVO - REEMPLAZAR TODO) */
+
+/* ========== VARIABLES POR TIPO ========== */
+restaurant-card {
+  --banner-bg-start: #666;
+  --banner-bg-end: #444;
+  --banner-accent: rgba(255,255,255,0.9);
+  --banner-glow: rgba(0,0,0,0.2);
+}
+
+restaurant-card[type="burgers"] {
+  --banner-bg-start: #ff8c00;
+  --banner-bg-end: #e65100;
+  --banner-accent: #fff3e0;
+}
+
+restaurant-card[type="italian"] {
+  --banner-bg-start: #66bb6a;
+  --banner-bg-end: #2e7d32;
+  --banner-accent: #e8f5e9;
+}
+
+restaurant-card[type="mexican"] {
+  --banner-bg-start: #ffca28;
+  --banner-bg-end: #ff8f00;
+  --banner-accent: #fff8e1;
+}
+
+restaurant-card[type="cafe"] {
+  --banner-bg-start: #8d6e63;
+  --banner-bg-end: #4e342e;
+  --banner-accent: #efebe9;
+}
+
+/* ========== GRID ========== */
+.restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ========== BANNER PRINCIPAL ========== */
+restaurant-card .restaurant-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  background: linear-gradient(135deg, var(--banner-bg-start), var(--banner-bg-end));
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 280px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+restaurant-card .restaurant-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2), 0 0 0 4px rgba(255,255,255,0.1);
+}
+
+/* Efecto de brillo diagonal */
+restaurant-card .restaurant-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+restaurant-card .restaurant-banner:hover::after {
+  left: 150%;
+}
+
+/* ========== LADO IZQUIERDO ========== */
+restaurant-card .banner-left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+restaurant-card .logo-wrap {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 5px;
+  background: rgba(255,255,255,0.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+restaurant-card .restaurant-banner:hover .logo-wrap {
+  transform: scale(1.08) rotate(3deg);
+}
+
+restaurant-card .restaurant-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.9);
+}
+
+restaurant-card .restaurant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+restaurant-card .restaurant-meta h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+restaurant-card .restaurant-desc {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+restaurant-card .banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+restaurant-card .restaurant-banner:hover .banner-cta {
+  background: rgba(255,255,255,0.95);
+  color: var(--banner-bg-end);
+  border-color: white;
+}
+
+restaurant-card .cta-arrow {
+  transition: transform 0.3s ease;
+}
+
+restaurant-card .restaurant-banner:hover .cta-arrow {
+  transform: translateX(6px);
+}
+
+/* ========== LADO DERECHO ========== */
+restaurant-card .banner-right {
+  display: flex;
+  align-items: center;
+  padding: 24px 32px 24px 0;
+  position: relative;
+  z-index: 2;
+}
+
+restaurant-card .products-section {
+  width: 100%;
+}
+
+restaurant-card .section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+restaurant-card .fire-icon {
+  font-size: 1.1rem;
+}
+
+restaurant-card .products-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========== PRODUCT CARD ========== */
+restaurant-card .product-card {
+  display: flex;
+  gap: 16px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  padding: 14px;
+  animation: slideInRight 0.5s ease forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+}
+
+restaurant-card .restaurant-banner:hover .product-card {
+  background: rgba(255,255,255,0.22);
+  transform: translateX(4px);
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+restaurant-card .product-img-wrap {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+restaurant-card .product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+restaurant-card .product-img-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+}
+
+restaurant-card .product-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+restaurant-card .product-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+restaurant-card .product-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+restaurant-card .product-rank {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: white;
+}
+
+restaurant-card .product-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+restaurant-card .product-price {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--banner-accent);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  restaurant-card .restaurant-banner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  
+  restaurant-card .banner-left {
+    padding: 24px 24px 0;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  restaurant-card .logo-wrap {
+    width: 100px;
+    height: 100px;
+  }
+  
+  restaurant-card .restaurant-meta h2 {
+    font-size: 1.6rem;
+  }
+  
+  restaurant-card .restaurant-desc {
+    max-width: 100%;
+  }
+  
+  restaurant-card .banner-cta {
+    margin: 8px auto 0;
+  }
+  
+  restaurant-card .banner-right {
+    padding: 20px 24px 24px;
+  }
+  
+  restaurant-card .product-card {
+    padding: 12px;
+  }
+  
+  restaurant-card .product-img-wrap {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-list {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  restaurant-card .banner-left {
+    padding: 20px 20px 0;
+  }
+  
+  restaurant-card .banner-right {
+    padding: 16px 20px 20px;
+  }
+  
+  restaurant-card .product-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  restaurant-card .product-desc {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+}
+
+restaurant-card .fire-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  object-fit: contain;
+}

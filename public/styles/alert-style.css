@@ -1,0 +1,109 @@
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.alert-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.alert-box {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 30px 35px;
+  border-radius: 25px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  transform: scale(0.85);
+  transition: transform 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.alert-overlay.active .alert-box {
+  transform: scale(1);
+}
+
+.alert-box h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: 700;
+}
+
+.alert-box p {
+  margin: 0 0 22px 0;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.alert-btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg, #01b1d4, #ff80ab);
+  box-shadow: 0 4px 15px rgba(1, 177, 212, 0.35);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.alert-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 20px rgba(1, 177, 212, 0.45);
+}
+
+.alert-box.error h3 {
+  color: #c62828;
+}
+.alert-box.error .alert-btn {
+  background: linear-gradient(90deg, #ff5252, #ff80ab);
+  box-shadow: 0 4px 15px rgba(255, 82, 82, 0.35);
+}
+
+.alert-box.success h3 {
+  color: #2e7d32;
+}
+.alert-box.success .alert-btn {
+  background: linear-gradient(90deg, #66bb6a, #81c784);
+  box-shadow: 0 4px 15px rgba(102, 187, 106, 0.35);
+}
+
+.alert-box.info h3 {
+  color: #1565c0;
+}
+.alert-box.info .alert-btn {
+  background: linear-gradient(90deg, #42a5f5, #64b5f6);
+  box-shadow: 0 4px 15px rgba(66, 165, 245, 0.35);
+}
+
+.alert-btn.secondary {
+  background: #e0e0e0;
+  color: #333;
+  box-shadow: none;
+}
+.alert-btn.secondary:hover {
+  background: #d6d6d6;
+  transform: none;
+  box-shadow: none;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}

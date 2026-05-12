@@ -1,0 +1,405 @@
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  border: 1px solid #f0f0f0;
+  flex: 1 1 260px;
+  max-width: 380px;
+  min-width: 260px;
+}
+
+.menu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+/* Imagen fija */
+.menu-item .image-container {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.menu-item .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.menu-item:hover .image-container img {
+  transform: scale(1.05);
+}
+
+/* Contenido compacto */
+.menu-item .content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+}
+
+.menu-item h4 {
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  color: #222;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Descripción truncada a 2 líneas */
+.menu-item .description {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1; /* empuja el precio y botón abajo */
+}
+
+/* Precio */
+.menu-item .price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #2e7d32;
+  margin: 0 0 12px 0;
+}
+
+/* Botón siempre abajo */
+.menu-item .add-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: var(--item-btn-bg, linear-gradient(90deg, #0b0105, #0a02f0));
+  transition: transform 0.2s, filter 0.2s;
+  margin-top: auto;
+}
+
+.menu-item .add-btn:hover {
+  transform: scale(1.03);
+  filter: brightness(1.1);
+}
+
+/* Indicador de opciones disponibles */
+.menu-item .has-options {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+/* ================== MODAL / POPUP ================== */
+.item-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.item-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  animation: scaleIn 0.25s 0.05s forwards;
+}
+
+@keyframes scaleIn {
+  to { transform: scale(1); }
+}
+
+/* Header del modal con imagen */
+.item-modal-header {
+  position: relative;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.item-modal-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.item-modal-close:hover {
+  transform: rotate(90deg);
+}
+
+/* Cuerpo del modal (scrollable) */
+.item-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.item-modal-body h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  color: #222;
+}
+
+.item-modal-body .modal-description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+/* Secciones de opciones en el modal */
+.modal-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-section:last-of-type {
+  border-bottom: none;
+}
+
+.modal-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-section-title .required {
+  color: #e53935;
+  font-size: 0.8rem;
+}
+
+.modal-section select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
+  font-size: 0.95rem;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.modal-section select:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+/* Checkboxes estilo chips */
+.modal-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.modal-checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #f5f5f5;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.modal-checkbox-group label:hover {
+  background: #e3f2fd;
+}
+
+.modal-checkbox-group input {
+  display: none;
+}
+
+.modal-checkbox-group label:has(input:checked) {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+/* Precio dinámico en modal */
+.modal-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.modal-price-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.modal-price-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2e7d32;
+}
+
+.modal-price-value .original {
+  font-size: 1rem;
+  color: #999;
+  text-decoration: line-through;
+  margin-right: 8px;
+}
+
+/* Precio normal */
+.modal-price-value .current {
+  color: #2e7d32;
+  transition: color 0.2s;
+}
+
+/* Si el precio AUMENTA */
+.modal-price-value .current.price-up {
+  color: #00c853; /* verde brillante */
+  font-weight: 800;
+}
+
+/* Si el precio DISMINUYE (descuento) */
+.modal-price-value .current.price-down {
+  color: #ff6d00; /* naranja/rojo descuento */
+  font-weight: 800;
+}
+
+/* Flechita opcional antes del número */
+.modal-price-value .current.price-up::before {
+  content: '▲ ';
+  font-size: 0.7em;
+}
+.modal-price-value .current.price-down::before {
+  content: '▼ ';
+  font-size: 0.7em;
+}
+
+/* Botón confirmar en modal */
+.modal-add-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  background: linear-gradient(90deg, #2e7d32, #4caf50);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.modal-add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+}
+
+.modal-add-btn:active {
+  transform: translateY(0);
+}
+
+/* Error en modal */
+.modal-error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 8px;
+  min-height: 20px;
+}
+
+/* Responsive: dos columnas en desktop */
+@media (min-width: 640px) {
+  .item-modal {
+    flex-direction: row;
+    max-height: 500px;
+  }
+  
+  .item-modal-header {
+    width: 45%;
+    height: auto;
+  }
+  
+  .item-modal-body {
+    width: 55%;
+  }
+}
+
+/* Animación de cierre */
+.item-modal-overlay.closing {
+  animation: fadeOut 0.2s forwards;
+}
+
+.item-modal-overlay.closing .item-modal {
+  animation: scaleOut 0.2s forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes scaleOut {
+  to { transform: scale(0.9); }
+}

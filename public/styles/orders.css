@@ -1,0 +1,158 @@
+.orders-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+.orders-page h2 {
+  margin-bottom: 28px;
+  color: #333;
+  font-size: 1.6rem;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.order-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 18px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.order-date {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.order-body {
+  padding: 20px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.order-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.order-item-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+.order-item-variant {
+  display: inline-block;
+  background: #e3f2fd;
+  color: #1976d2;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 4px;
+  font-weight: 500;
+}
+.order-item-options {
+  font-size: 0.82rem;
+  color: #666;
+  margin-top: 2px;
+}
+.order-item-price {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.order-footer {
+  padding: 16px 22px;
+  background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.order-total-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+.order-total-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.order-empty {
+  text-align: center;
+  padding: 70px 20px;
+  color: #888;
+}
+.order-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.stat-box {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #667eea;
+  line-height: 1;
+}
+.stat-label {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #01b1d4, #ff80ab);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}

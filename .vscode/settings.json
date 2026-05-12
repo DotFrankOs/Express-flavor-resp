@@ -1,0 +1,9 @@
+{
+    "liveServer.settings.root": "/public",
+    "liveServer.settings.ignoreFiles": [
+        "**/server/**",
+        "**/*.log",
+        "**/*.md",
+        "**/node_modules/**"
+    ]
+}

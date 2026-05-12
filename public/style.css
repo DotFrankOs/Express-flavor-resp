@@ -1,0 +1,434 @@
+/* Fuentes y reset */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ----------------- LOGIN ----------------- */
+body.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #087dd6, #3b3a02, #220129, #115909);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 25px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 350px;
+}
+
+.login-container .logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: white;
+}
+
+.login-container input {
+  width: 90%;
+  margin: 12px auto;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid #1d05b7;
+  display: block;
+  font-size: 16px;
+}
+
+.login-container button {
+  width: 50%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #01b1d4, #ff80ab);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-container button:hover {
+  transform: scale(1.05);
+}
+
+/* ----------------- Grid del menú ----------------- */
+.menu-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: stretch;
+}
+
+
+/* ----------------- Fondos y botones por restaurante ----------------- */
+
+/* Burgers */
+body.restaurant-burgers {
+  background: linear-gradient(135deg, #e09302, #d89906);
+}
+body.restaurant-burgers header {
+  background-color: #d0c425;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+}
+body.restaurant-burgers .menu-item .add-btn {
+  background: linear-gradient(90deg, #dbf803, #ff80ab);
+}
+
+/* Italian */
+body.restaurant-italian {
+  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+}
+body.restaurant-italian header {
+  background-color: #4caf50;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+}
+body.restaurant-italian .menu-item .add-btn {
+  background: linear-gradient(90deg, #66bb6a, #81c784);
+}
+
+/* México */
+body.restaurant-mexican {
+  background: linear-gradient(135deg, #c37171, #ad645a);
+}
+body.restaurant-mexican header {
+  background-color: #4faa47;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+}
+body.restaurant-mexican .menu-item .add-btn {
+  background: linear-gradient(90deg, #c20b0b, #ffc107);
+}
+
+/* Café */
+body.restaurant-cafe {
+  background: linear-gradient(135deg, #d7ccc8, #8d6e63);
+}
+body.restaurant-cafe header {
+  background-color: #8d6e63;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+}
+body.restaurant-cafe .menu-item .add-btn {
+  background: linear-gradient(90deg, #6d4c41, #8d6e63);
+}
+
+/* ----------------- Header con logo ----------------- */
+header {
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+header.restaurant-header {
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  margin-top: 16px; /* ← separación del app-header */
+}
+
+.restaurant-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Botón regresar */
+.back-btn {
+  background: linear-gradient(90deg, #ff4081, #ff80ab);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-top: 10px;
+}
+
+.back-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* ----------------- Carrito ----------------- */
+.cart-container {
+  margin: 20px;
+  padding: 15px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+body.restaurant-selection {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #b4cb05, #03c5f5, #c30127);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+}
+
+body.restaurant-selection .restaurant-list {
+  padding: 20px;
+}
+
+body.restaurant-selection header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #faf8f8;
+}
+
+header h2 {
+  flex: 1 1 100%;
+  font-size: 28px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #fcf9f9;
+}
+
+.logout-btn {
+  background: linear-gradient(90deg, #080707, #aa80ff);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+.restaurant-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.restaurant-card {
+  color: white;
+  border-radius: 20px;
+  text-align: center;
+  padding: 25px 15px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+.restaurant-card .restaurant-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgb(252, 247, 247);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.restaurant-card.burgers {
+  background: linear-gradient(135deg, #ef8002, #ff7043);
+}
+.restaurant-card.italian {
+  background: linear-gradient(135deg, #c8e6c9, #4caf50);
+}
+.restaurant-card.mexican {
+  background: linear-gradient(135deg, #ffe082, #ffb300);
+}
+.restaurant-card.cafe {
+  background: linear-gradient(135deg, #d7ccc8, #8d6e63);
+}
+
+.restaurant-card h3 {
+  margin: 10px 0 5px 0;
+}
+.restaurant-card p {
+  font-size: 14px;
+}
+
+/* ----------------- Reservas ----------------- */
+.reservation-section {
+  background: rgba(255,255,255,0.25);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.table {
+  background: rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.2s, background 0.2s;
+}
+.table.available:hover {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.5);
+}
+.table.selected {
+  background: #00e676;
+}
+.table.reserved {
+  background: #d50000;
+  cursor: not-allowed;
+}
+
+.reserve-btn {
+  background: #fff;
+  color: #333;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  padding: 12px 25px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.reserve-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* ----------------- Reportes ----------------- */
+.report-section {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 25px;
+  text-align: center;
+}
+
+.report-box {
+  width: 100%;
+  height: 90px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  resize: none;
+  margin-top: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.report-btn {
+  margin-top: 12px;
+  background: #ff5252;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.report-btn:hover {
+  background: #c62828;
+}
+
+/* ----------------- Modal ----------------- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 12px;
+  width: 280px;
+  text-align: center;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #f11111;
+}
+
+.btn-confirm {
+  margin-top: 10px;
+  background: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-confirm:hover {
+  background: #2e7d32;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  margin-top: 10px;
+}

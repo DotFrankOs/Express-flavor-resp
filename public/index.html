@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Flavor - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles/alert-style.css">
+</head>
+<body class="login-page">
+  <div class="login-container">
+  <img src="logo.png" alt="Logo Food Fast" class="logo">
+  <h1>Express Flavor</h1>
+
+  <form id="login-form">
+    <input id="inputUser" type="text" placeholder="Usuario" required>
+    <input id="inputPass" type="password" placeholder="Contraseña" required>
+    <button type="submit">Entrar</button>
+  </form>
+
+  <div style="margin-top: 15px;">
+    <button id="btnSaveAccount">Guardar cuenta</button>
+  </div>
+
+  <select id="savedAccounts" style="width: 100%; margin-top: 10px; display:none;"></select>
+  <script src="scripts/handlers/login-handler.js" type="module"></script>
+  
+</body>
+</html>
+

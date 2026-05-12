@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Pedidos - Express Flavor</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles/app-header.css">
+  <link rel="stylesheet" href="styles/orders.css">
+  <script type="module" src="components/app-header.js"></script>
+  
+</head>
+<body class="restaurant-selection">
+  <app-header></app-header>
+  
+  <main class="orders-page">
+    <h2>Mis Pedidos</h2>
+    
+    <div class="stats-bar" id="orders-stats">
+      <div class="stat-box">
+        <div class="stat-number" id="stat-total-orders">0</div>
+        <div class="stat-label">Pedidos realizados</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-total-items">0</div>
+        <div class="stat-label">Productos comprados</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-total-spent">C$0</div>
+        <div class="stat-label">Total gastado</div>
+      </div>
+    </div>
+    
+    <div id="orders-list">
+      <div class="order-empty">
+        <div class="order-empty-icon">📭</div>
+        <p>Cargando tus pedidos...</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="scripts/handlers/orders-handler.js"></script>
+</body>
+</html>
