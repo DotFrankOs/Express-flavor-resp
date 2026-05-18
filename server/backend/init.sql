@@ -1,14 +1,5 @@
--- ============================================
--- EXPRESS FLAVOR - BASE DE DATOS INICIAL
--- PostgreSQL 15
--- ============================================
-
--- Extension para UUIDs (opcional)
+-- Base de datos para express flavor
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- ============================================
--- TABLAS
--- ============================================
 
 CREATE TABLE IF NOT EXISTS users (
   "user" VARCHAR(50) PRIMARY KEY,
@@ -166,9 +157,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
   PRIMARY KEY (id, user_id)
 );
 
--- ============================================
--- DATOS INICIALES
--- ============================================
+-- DATOS DE PRUEBA
 
 -- Usuarios
 INSERT INTO users ("user", pass, name, email, phone, avatar, role, favorites, orders_count) VALUES
@@ -184,9 +173,7 @@ INSERT INTO restaurants (id, name, type, logo, description, url, min_duration, m
 ('cafe', 'Café Aroma', 'cafe', 'cafe aroma.png', 'Postres, café y un ambiente cálido para disfrutar.', 'menu.html?restaurant=cafe', 1, 2)
 ON CONFLICT (id) DO NOTHING;
 
--- ============================================
--- MENÚ BURGERS
--- ============================================
+-- MENÚES
 INSERT INTO menu_items (id, restaurant_id, name, price, image, description) VALUES
 ('b1', 'burgers', 'Burger Clásica', 6.99, 'fotos food fast burgers/hambuwesa.png', 'Jugosa carne de res 150g, lechuga fresca, tomate maduro, cebolla morada y salsa especial de la casa en pan brioche tostado.'),
 ('b2', 'burgers', 'Doble Queso & Bacon', 8.49, 'fotos food fast burgers/hamburguesa-doble-queso-bacon-1024x683.png', 'Doble carne smash, doble capa de queso cheddar derretido, crujiente bacon ahumado, pepinillos y salsa BBQ.'),
@@ -240,9 +227,7 @@ UNION ALL
 SELECT id, 'huevo', 'Huevo Frito Estrellado', 1.49 FROM menu_item_options WHERE menu_item_id = 'b5' AND option_id = 'extras'
 ON CONFLICT DO NOTHING;
 
--- ============================================
 -- MENÚ ITALIAN
--- ============================================
 INSERT INTO menu_items (id, restaurant_id, name, price, image, description) VALUES
 ('i1', 'italian', 'Pasta Carbonara Tradicional', 13.99, 'fotos italian taste/carbonara.jpg', 'Auténtica receta romana con yema de huevo, queso pecorino, pancetta italiana y pimienta negra recién molida.'),
 ('i2', 'italian', 'Pizza Margarita Napolitana', 12.99, 'fotos italian taste/pizza.jpg', 'Masa madre de 48h, salsa de tomate San Marzano, mozzarella fior di latte y albahaca fresca. Horneada a leña.')
@@ -279,18 +264,14 @@ UNION ALL
 SELECT id, 'champinones', 'Champiñones Portobello', 1.99 FROM menu_item_options WHERE menu_item_id = 'i2' AND option_id = 'extras'
 ON CONFLICT DO NOTHING;
 
--- ============================================
 -- MENÚ MEXICAN
--- ============================================
 INSERT INTO menu_items (id, restaurant_id, name, price, image, description) VALUES
 ('m1', 'mexican', 'Tacos al Pastor', 9.99, 'fotos viva mexico/tacos.jpg', 'Tres tacos de cerdo marinado adobado, piña asada, cebolla, cilantro y salsa verde en tortillas de maíz hechas a mano.'),
 ('m2', 'mexican', 'Burrito Supreme', 10.99, 'fotos viva mexico/burritos.jpg', 'Tortilla de harina grande rellena de carne asada, arroz, frijoles, guacamole, crema agria, queso y pico de gallo.'),
 ('m3', 'mexican', 'Nachos Supremos', 7.99, 'fotos viva mexico/nachos.jpg', 'Totopos de maíz cubiertos con queso fundido, jalapeños, frijoles refritos, pico de gallo, guacamole y crema agria.')
 ON CONFLICT (id) DO NOTHING;
 
--- ============================================
 -- MENÚ CAFE
--- ============================================
 INSERT INTO menu_items (id, restaurant_id, name, price, image, description) VALUES
 ('c1', 'cafe', 'Café Latte Artesanal', 4.49, 'cafe aroma/latte.jpg', 'Espresso doble con leche vaporizada y microespuma, decorado con latte art. Granos 100% arábica de origen único.'),
 ('c2', 'cafe', 'Cheesecake de Fresa', 6.99, 'cafe aroma/cheesecake.webp', 'Cremoso cheesecake estilo Nueva York sobre base de galleta Graham, cubierto con coulis de fresas naturales.'),
@@ -339,9 +320,7 @@ INSERT INTO tables (id, restaurant_id, name, label, style) VALUES
 (4, 'cafe', 'B1', 'Barra 1', 'bar')
 ON CONFLICT DO NOTHING;
 
--- ============================================
 -- TABLE LAYOUTS
--- ============================================
 INSERT INTO table_layouts (restaurant_id, columns, gap) VALUES
 ('burgers', 4, '14px'),
 ('italian', 3, '16px'),
@@ -349,9 +328,7 @@ INSERT INTO table_layouts (restaurant_id, columns, gap) VALUES
 ('cafe', 2, '20px')
 ON CONFLICT (restaurant_id) DO NOTHING;
 
--- ============================================
 -- EXCHANGE RATES
--- ============================================
 INSERT INTO exchange_rates (code, symbol, rate) VALUES
 ('USD', '$', 1),
 ('ARS', 'ARS$', 1015),
@@ -360,9 +337,7 @@ INSERT INTO exchange_rates (code, symbol, rate) VALUES
 ('NIO', 'C$', 36.4)
 ON CONFLICT (code) DO NOTHING;
 
--- ============================================
--- ITEM STATS (datos iniciales)
--- ============================================
+-- ESTADISTICAS ITEMS (datos iniciales)
 INSERT INTO item_stats (restaurant_id, item_key, count) VALUES
 ('burgers', 'b1', 14),
 ('burgers', 'b5', 23),

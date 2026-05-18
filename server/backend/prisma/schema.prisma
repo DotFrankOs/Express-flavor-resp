@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user         String   @id @db.VarChar(50)
+  pass         String   @db.VarChar(100)
+  name         String   @db.VarChar(100)
+  email        String?  @db.VarChar(100)
+  phone        String?  @db.VarChar(50)
+  avatar       String?
+  role         String   @default("customer") @db.VarChar(20)
+  favorites    String?  @db.VarChar
+  orders_count Int      @default(0)
+
+  reservations Reservation[]
+  reports      Report[]
+  orders       Order[]
+  cart_items   CartItem[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  id           String   @id @db.VarChar(50)
+  name         String   @db.VarChar(100)
+  type         String?  @db.VarChar(50)
+  logo         String?  @db.VarChar(200)
+  description  String?
+  url          String?  @db.VarChar(200)
+  min_duration Int      @default(1)
+  max_duration Int      @default(3)
+
+  menu_items    MenuItem[]
+  tables        Table[]
+  table_layouts TableLayout?
+  reservations  Reservation[]
+  orders        Order[]
+  item_stats    ItemStat[]
+
+  @@map("restaurants")
+}
+
+model MenuItem {
+  id            String  @id @db.VarChar(50)
+  restaurant_id String  @db.VarChar(50)
+  name          String  @db.VarChar(100)
+  price         Decimal @db.Decimal(10, 2)
+  image         String? @db.VarChar(200)
+  description   String?
+
+  restaurant  Restaurant      @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
+  options     MenuItemOption[]
+  variants    MenuItemVariant[]
+  order_items OrderItem[]
+
+  @@map("menu_items")
+}
+
+model MenuItemOption {
+  id           Int     @id @default(autoincrement())
+  menu_item_id String  @db.VarChar(50)
+  option_id    String  @db.VarChar(50)
+  name         String? @db.VarChar(100)
+  required     Boolean @default(false)
+  multi_select Boolean @default(false)
+
+  menu_item MenuItem @relation(fields: [menu_item_id], references: [id], onDelete: Cascade)
+  choices   MenuItemOptionChoice[]
+
+  @@map("menu_item_options")
+}
+
+model MenuItemOptionChoice {
+  id             Int     @id @default(autoincrement())
+  option_id      Int
+  choice_id      String  @db.VarChar(50)
+  name           String? @db.VarChar(100)
+  price_modifier Decimal @default(0) @db.Decimal(10, 2)
+
+  option MenuItemOption @relation(fields: [option_id], references: [id], onDelete: Cascade)
+
+  @@map("menu_item_option_choices")
+}
+
+model MenuItemVariant {
+  id           Int     @id @default(autoincrement())
+  menu_item_id String  @db.VarChar(50)
+  required     Boolean @default(false)
+
+  menu_item MenuItem @relation(fields: [menu_item_id], references: [id], onDelete: Cascade)
+  items     MenuItemVariantItem[]
+
+  @@map("menu_item_variants")
+}
+
+model MenuItemVariantItem {
+  id         Int     @id @default(autoincrement())
+  variant_id Int
+  item_id    String  @db.VarChar(50)
+  name       String? @db.VarChar(100)
+  price      Decimal? @db.Decimal(10, 2)
+
+  variant MenuItemVariant @relation(fields: [variant_id], references: [id], onDelete: Cascade)
+
+  @@map("menu_item_variant_items")
+}
+
+model Table {
+  id            Int
+  restaurant_id String  @db.VarChar(50)
+  name          String? @db.VarChar(20)
+  label         String? @db.VarChar(50)
+  style         String? @default("standard") @db.VarChar(20)
+
+  restaurant Restaurant @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
+
+  @@id([id, restaurant_id])
+  @@map("tables")
+}
+
+model TableLayout {
+  restaurant_id String @id @db.VarChar(50)
+  columns       Int    @default(5)
+  gap           String? @default("10px") @db.VarChar(20)
+
+  restaurant Restaurant @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
+
+  @@map("table_layouts")
+}
+
+model Reservation {
+  id            Int      @id @default(autoincrement())
+  restaurant_id String   @db.VarChar(50)
+  table_number  Int
+  start_time    DateTime @db.Timestamp()
+  end_time      DateTime @db.Timestamp()
+  duration      Int?
+  code          String?  @db.VarChar(20)
+  user_id       String?  @db.VarChar(50)
+
+  restaurant Restaurant @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [user_id], references: [user])
+
+  @@map("reservations")
+}
+
+model Order {
+  id              String   @id @db.VarChar(50)
+  user_id         String?  @db.VarChar(50)
+  restaurant_id   String?  @db.VarChar(50)
+  restaurant_name String?  @db.VarChar(100)
+  total           Decimal? @db.Decimal(10, 2)
+  created_at      DateTime @default(now()) @db.Timestamp()
+
+  user       User?       @relation(fields: [user_id], references: [user])
+  restaurant Restaurant? @relation(fields: [restaurant_id], references: [id])
+  items      OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String  @id @db.VarChar(100)
+  order_id   String  @db.VarChar(50)
+  item_id    String? @db.VarChar(50)
+  name       String? @db.VarChar(100)
+  base_name  String? @db.VarChar(100)
+  price      Decimal? @db.Decimal(10, 2)
+  base_price Decimal? @db.Decimal(10, 2)
+  quantity   Int?
+  variant    String?
+  image      String? @db.VarChar(200)
+
+  order   Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  options OrderItemOption[]
+
+  @@map("order_items")
+}
+
+model OrderItemOption {
+  id             Int     @id @default(autoincrement())
+  order_item_id  String  @db.VarChar(100)
+  choice_id      String? @db.VarChar(50)
+  choice_name    String? @db.VarChar(100)
+  price_modifier Decimal @default(0) @db.Decimal(10, 2)
+
+  order_item OrderItem @relation(fields: [order_item_id], references: [id], onDelete: Cascade)
+
+  @@map("order_item_options")
+}
+
+model Report {
+  id          BigInt   @id
+  description String
+  image       String?  @db.VarChar(200)
+  date        DateTime @default(now()) @db.Timestamp()
+  user_id     String?  @db.VarChar(50)
+
+  user User? @relation(fields: [user_id], references: [user])
+
+  @@map("reports")
+}
+
+model ExchangeRate {
+  code   String  @id @db.VarChar(10)
+  symbol String? @db.VarChar(10)
+  rate   Decimal @db.Decimal(15, 4)
+
+  @@map("exchange_rates")
+}
+
+model ItemStat {
+  restaurant_id String @db.VarChar(50)
+  item_key      String @db.VarChar(100)
+  count         Int    @default(0)
+
+  restaurant Restaurant @relation(fields: [restaurant_id], references: [id])
+
+  @@id([restaurant_id, item_key])
+  @@map("item_stats")
+}
+
+model CartItem {
+  id              String  @db.VarChar(100)
+  user_id         String  @db.VarChar(50)
+  name            String? @db.VarChar(100)
+  base_name       String? @db.VarChar(100)
+  price           Decimal? @db.Decimal(10, 2)
+  base_price      Decimal? @db.Decimal(10, 2)
+  restaurant_id   String? @db.VarChar(50)
+  restaurant_name String? @db.VarChar(100)
+  quantity        Int     @default(1)
+  variant         String?
+  options         String?
+  image           String? @db.VarChar(200)
+
+  user User @relation(fields: [user_id], references: [user])
+
+  @@id([id, user_id])
+  @@map("cart_items")
+}

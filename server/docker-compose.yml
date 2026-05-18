@@ -30,6 +30,7 @@ services:
       DB_USER: expressuser
       DB_PASS: expresspass
       DB_NAME: expressflavor
+      DATABASE_URL: "postgresql://expressuser:expresspass@db:5432/expressflavor?schema=public"
     ports:
       - "3000:3000"
     depends_on:
@@ -37,6 +38,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend/logs:/app/logs
+      - ./backend/prisma:/app/prisma
 
 volumes:
   postgres_data:
