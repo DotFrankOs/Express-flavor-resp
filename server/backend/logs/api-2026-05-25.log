@@ -1,0 +1,87 @@
+[2026-05-25T19:34:52.838Z] [INFO] === INFORMACIÓN DE PUERTOS === 
+[2026-05-25T19:34:52.850Z] [INFO] Servidor corriendo en: http://localhost:3000 
+[2026-05-25T19:34:52.851Z] [INFO] API Base URL: http://localhost:3000/api 
+[2026-05-25T19:34:52.852Z] [INFO] También disponible en: http://172.18.0.3:3000 
+[2026-05-25T19:34:52.852Z] [INFO] Puertos expuestos en Docker: 
+[2026-05-25T19:34:52.852Z] [INFO]   - Backend: 3000 
+[2026-05-25T19:34:52.852Z] [INFO]   - PostgreSQL: 5432 
+[2026-05-25T19:34:52.852Z] [INFO] ============================== 
+[2026-05-25T19:34:52.853Z] [INFO] Servidor Express Flavor con Prisma iniciado correctamente 
+[2026-05-25T19:39:56.103Z] [INFO] === INFORMACIÓN DE PUERTOS === 
+[2026-05-25T19:39:56.116Z] [INFO] Servidor corriendo en: http://localhost:3000 
+[2026-05-25T19:39:56.116Z] [INFO] API Base URL: http://localhost:3000/api 
+[2026-05-25T19:39:56.118Z] [INFO] También disponible en: http://172.18.0.3:3000 
+[2026-05-25T19:39:56.118Z] [INFO] Puertos expuestos en Docker: 
+[2026-05-25T19:39:56.119Z] [INFO]   - Backend: 3000 
+[2026-05-25T19:39:56.119Z] [INFO]   - PostgreSQL: 5432 
+[2026-05-25T19:39:56.119Z] [INFO] ============================== 
+[2026-05-25T19:39:56.119Z] [INFO] Servidor Express Flavor con Prisma iniciado correctamente 
+[2026-05-25T19:42:35.110Z] [INFO] === INFORMACIÓN DE PUERTOS === 
+[2026-05-25T19:42:35.119Z] [INFO] Servidor corriendo en: http://localhost:3000 
+[2026-05-25T19:42:35.119Z] [INFO] API Base URL: http://localhost:3000/api 
+[2026-05-25T19:42:35.120Z] [INFO] También disponible en: http://172.18.0.3:3000 
+[2026-05-25T19:42:35.120Z] [INFO] Puertos expuestos en Docker: 
+[2026-05-25T19:42:35.121Z] [INFO]   - Backend: 3000 
+[2026-05-25T19:42:35.121Z] [INFO]   - PostgreSQL: 5432 
+[2026-05-25T19:42:35.121Z] [INFO] ============================== 
+[2026-05-25T19:42:35.121Z] [INFO] Servidor Express Flavor con Prisma iniciado correctamente 
+[2026-05-25T19:47:04.183Z] [INFO] === INFORMACIÓN DE PUERTOS === 
+[2026-05-25T19:47:04.185Z] [INFO] Servidor corriendo en: http://localhost:3000 
+[2026-05-25T19:47:04.185Z] [INFO] API Base URL: http://localhost:3000/api 
+[2026-05-25T19:47:04.186Z] [INFO] También disponible en: http://172.18.0.3:3000 
+[2026-05-25T19:47:04.186Z] [INFO] Puertos expuestos en Docker: 
+[2026-05-25T19:47:04.187Z] [INFO]   - Backend: 3000 
+[2026-05-25T19:47:04.187Z] [INFO]   - PostgreSQL: 5432 
+[2026-05-25T19:47:04.187Z] [INFO] ============================== 
+[2026-05-25T19:47:04.187Z] [INFO] Servidor Express Flavor con Prisma iniciado correctamente 
+[2026-05-25T19:47:31.035Z] [API] POST /api/auth/register {"ip":"::ffff:172.18.0.1","status":200,"duration":"304ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{\"user\":\"admin5\",\"pass\":\"1234\",\"name\":\"admin5\"}"}
+[2026-05-25T19:47:32.808Z] [API] POST /api/auth/login {"ip":"::ffff:172.18.0.1","status":200,"duration":"6ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{\"username\":\"admin5\",\"password\":\"1234\"}"}
+[2026-05-25T19:47:33.218Z] [API] GET /api/exchange-rates {"ip":"::ffff:172.18.0.1","status":304,"duration":"67ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.258Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"29ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.386Z] [API] GET /api/restaurants {"ip":"::ffff:172.18.0.1","status":304,"duration":"223ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.468Z] [API] GET /api/stats/restaurants/burgers/top?limit=2 {"ip":"::ffff:172.18.0.1","status":304,"duration":"40ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.487Z] [API] GET /api/reservations/my {"ip":"::ffff:172.18.0.1","status":304,"duration":"82ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.509Z] [API] GET /api/restaurants/burgers/menu {"ip":"::ffff:172.18.0.1","status":304,"duration":"26ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.537Z] [API] GET /api/orders/user/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"42ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.605Z] [API] GET /api/stats/restaurants/italian/top?limit=2 {"ip":"::ffff:172.18.0.1","status":304,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.839Z] [API] GET /api/restaurants/italian/menu {"ip":"::ffff:172.18.0.1","status":304,"duration":"9ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.918Z] [API] GET /api/stats/restaurants/mexican/top?limit=2 {"ip":"::ffff:172.18.0.1","status":304,"duration":"6ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:33.961Z] [API] GET /api/restaurants/mexican/menu {"ip":"::ffff:172.18.0.1","status":304,"duration":"14ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:34.044Z] [API] GET /api/stats/restaurants/cafe/top?limit=2 {"ip":"::ffff:172.18.0.1","status":304,"duration":"10ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:34.078Z] [API] GET /api/restaurants/cafe/menu {"ip":"::ffff:172.18.0.1","status":304,"duration":"12ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.929Z] [API] GET /api/exchange-rates {"ip":"::ffff:172.18.0.1","status":304,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.936Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"5ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.954Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.961Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.972Z] [API] GET /api/reservations/my {"ip":"::ffff:172.18.0.1","status":304,"duration":"7ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:35.985Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"6ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.030Z] [API] GET /api/orders/user/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"11ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.036Z] [API] GET /api/restaurants/burgers {"ip":"::ffff:172.18.0.1","status":304,"duration":"18ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.106Z] [API] GET /api/restaurants/burgers/menu {"ip":"::ffff:172.18.0.1","status":304,"duration":"13ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.211Z] [API] GET /api/restaurants/burgers/tables {"ip":"::ffff:172.18.0.1","status":304,"duration":"39ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.262Z] [API] GET /api/restaurants/burgers/tables/layout {"ip":"::ffff:172.18.0.1","status":304,"duration":"19ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:36.298Z] [API] GET /api/restaurants/burgers/reservations {"ip":"::ffff:172.18.0.1","status":304,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.298Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.381Z] [API] PUT /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"79ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{\"items\":[{\"id\":\"burgers_Burger Clásica_1779738458300\",\"name\":\"Burger Clásica\",\"baseName\":\"Burger Clásica\",\"price\":6.99,\"basePrice\":6.99,\"restaurantId\":\"burgers\",\"restaurantName\":\"Food Fast Burgers\",\"quantity\":1,\"variant\":null,\"options\":[],\"image\":\"fotos food fast burgers/hambuwesa.png\"}],\"updatedAt\":\"2026-05-25T19:47:38.300Z\"}"}
+[2026-05-25T19:47:38.389Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.394Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.400Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.408Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"5ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.423Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"5ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.816Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.840Z] [API] PUT /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"19ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{\"items\":[{\"id\":\"burgers_Burger Clásica_1779738458300\",\"name\":\"Burger Clásica\",\"baseName\":\"Burger Clásica\",\"price\":6.99,\"basePrice\":6.99,\"restaurantId\":\"burgers\",\"restaurantName\":\"Food Fast Burgers\",\"quantity\":1,\"variant\":null,\"options\":[],\"image\":\"fotos food fast burgers/hambuwesa.png\"},{\"id\":\"burgers_Burger Clásica_1779738458818\",\"name\":\"Burger Clásica\",\"baseName\":\"Burger Clásica\",\"price\":6.99,\"basePrice\":6.99,\"restaurantId\":\"burgers\",\"restaurantName\":\"Food Fast Burgers\",\"quantity\":1,\"variant\""}
+[2026-05-25T19:47:38.850Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"4ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.856Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.866Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"7ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.878Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"8ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:38.894Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"5ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:44.473Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"2ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:44.480Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"2ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:45.493Z] [API] POST /api/orders {"ip":"::ffff:172.18.0.1","status":200,"duration":"76ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{\"restaurantId\":\"burgers\",\"restaurantName\":\"Food Fast Burgers\",\"items\":[{\"id\":\"burgers_Burger Clásica_1779738458300\",\"name\":\"Burger Clásica\",\"baseName\":\"Burger Clásica\",\"price\":6.99,\"basePrice\":6.99,\"restaurantId\":\"burgers\",\"restaurantName\":\"Food Fast Burgers\",\"quantity\":1,\"variant\":null,\"options\":[],\"image\":\"fotos food fast burgers/hambuwesa.png\"},{\"id\":\"burgers_Burger Clásica_1779738458818\",\"name\":\"Burger Clásica\",\"baseName\":\"Burger Clásica\",\"price\":6.99,\"basePrice\":6.99,\"restaurantId\":\"burger"}
+[2026-05-25T19:47:45.533Z] [API] GET /api/orders/user/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"23ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:46.527Z] [API] DELETE /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"8ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36","body":"{}"}
+[2026-05-25T19:47:46.560Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":200,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:46.580Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"6ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:46.590Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"7ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:46.602Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"8ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}
+[2026-05-25T19:47:46.619Z] [API] GET /api/cart/admin5 {"ip":"::ffff:172.18.0.1","status":304,"duration":"3ms","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"}

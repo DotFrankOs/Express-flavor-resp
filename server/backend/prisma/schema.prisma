@@ -177,8 +177,9 @@ model OrderItem {
   variant    String?
   image      String? @db.VarChar(200)
 
-  order   Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  options OrderItemOption[]
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  menu_item  MenuItem? @relation(fields: [item_id], references: [id])
+  options    OrderItemOption[]
 
   @@map("order_items")
 }
