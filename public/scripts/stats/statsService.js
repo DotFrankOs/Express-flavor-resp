@@ -2,7 +2,6 @@ import { apiConfig } from '../config/apiConfig.js';
 import { apiFetch } from '../utils/apiFetch.js';
 import { mockItemStats } from '../data/mockData.js';
 import { authService } from '../auth/authService.js';
-import { normalizeImageUrl } from '../utils/imageHelper.js';
 
 const STATS_KEY = 'express_flavor_item_stats';
 const ORDERS_KEY = 'express_flavor_orders';
@@ -44,7 +43,6 @@ function _updateUserOrderCount() {
   const orders = _loadOrders().filter(o => o.userId === user.user);
   const count = orders.length;
   
-  // Actualizar session
   const sessionRaw = sessionStorage.getItem('express_flavor_session');
   if (sessionRaw) {
     const session = JSON.parse(sessionRaw);
@@ -52,7 +50,6 @@ function _updateUserOrderCount() {
     sessionStorage.setItem('express_flavor_session', JSON.stringify(session));
   }
   
-  // Actualizar users en localStorage
   const usersRaw = localStorage.getItem('express_flavor_users');
   if (usersRaw) {
     const users = JSON.parse(usersRaw);
@@ -70,6 +67,11 @@ function _notifyOrder() {
 
 export const statsService = {
   async recordPurchase(restaurantId, itemId, itemData = {}) {
+    if (!restaurantId || !itemId) {
+      console.warn('Faltan datos para registrar stat:', { restaurantId, itemId, itemData });
+      return;
+    }
+
     const { quantity = 1, variant = null, options = [] } = itemData;
     
     if (apiConfig.useMock) {
@@ -99,6 +101,19 @@ export const statsService = {
     const { items, total, restaurantId, restaurantName } = orderData;
     const userId = _getUser();
     
+    for (const item of items) {
+      const itemId = item.id || item.itemId;
+      if (!itemId) {
+        console.warn('Item sin ID en orden, no se registra stat:', item);
+        continue;
+      }
+      await this.recordPurchase(restaurantId, itemId, {
+        quantity: item.quantity,
+        variant: item.variant,
+        options: item.options
+      });
+    }
+
     if (apiConfig.useMock) {
       const orders = _loadOrders();
       const order = {
@@ -107,7 +122,7 @@ export const statsService = {
         restaurantId,
         restaurantName,
         items: items.map(item => ({
-          itemId: item.id,
+          itemId: item.id || item.itemId,
           name: item.name,
           baseName: item.baseName || item.name,
           price: item.price,
@@ -122,15 +137,7 @@ export const statsService = {
       };
       orders.unshift(order);
       _saveOrders(orders);
-      
-      for (const item of items) {
-        await this.recordPurchase(restaurantId, item.id, {
-          quantity: item.quantity,
-          variant: item.variant,
-          options: item.options
-        });
-      }
-      
+
       _updateUserOrderCount();
       _notifyOrder();
       return order;
@@ -140,6 +147,8 @@ export const statsService = {
       method: 'POST',
       body: JSON.stringify({ ...orderData, userId })
     });
+
+    _updateUserOrderCount();
     _notifyOrder();
     return result;
   },

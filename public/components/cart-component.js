@@ -16,7 +16,10 @@ class CartComponent extends HTMLElement {
     
     this._boundAddToCart = async (e) => {
         await cartService.addItem({
+            id: e.detail.id,
             name: e.detail.name,
+            baseName: e.detail.baseName || e.detail.name,
+            basePrice: e.detail.basePrice || e.detail.price,
             price: e.detail.price,
             restaurantId: e.detail.restaurantId,
             restaurantName: e.detail.restaurantName,
@@ -90,24 +93,25 @@ class CartComponent extends HTMLElement {
     const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     message += `💰 Total: ${currencyService.formatPrice(total)}`;
 
-    if (confirm(message + '\n\n¿Confirmar compra?')) {
-      try {
-        for (const group of grouped) {
-          await statsService.recordOrder({
-            restaurantId: group.restaurantId,
-            restaurantName: group.restaurantName,
-            items: group.items,
-            total: group.items.reduce((s, i) => s + (i.price * i.quantity), 0)
-          });
-        }
-      } catch (err) {
-        console.error('Error registrando stats:', err);
+    if (!confirm(message + '\n\n¿Confirmar compra?')) return;
+
+    try {
+      for (const group of grouped) {
+        await statsService.recordOrder({
+          restaurantId: group.restaurantId,
+          restaurantName: group.restaurantName,
+          items: group.items,
+          total: group.items.reduce((s, i) => s + (i.price * i.quantity), 0)
+        });
       }
       
       alert('¡Compra realizada con éxito!');
       await cartService.clearCart();
       await this._loadCart();
       this.render();
+    } catch (err) {
+      console.error('Error registrando orden:', err);
+      alert('Hubo un error al procesar la compra. Intenta de nuevo.');
     }
   }
 

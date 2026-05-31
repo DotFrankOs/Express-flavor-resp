@@ -676,6 +676,47 @@ app.post('/api/orders', requireAuth, async (req, res) => {
         data: { orders_count: { increment: 1 } }
       });
 
+      for (const item of items) {
+        if (!item.id) {
+          log('warn', 'Item sin id en orden, saltando stat', { orderId, item });
+          continue;
+        }
+
+        const qty = item.quantity || 1;
+
+        await tx.itemStat.upsert({
+          where: {
+            restaurant_id_item_key: {
+              restaurant_id: restaurantId,
+              item_key: item.id
+            }
+          },
+          update: { count: { increment: qty } },
+          create: {
+            restaurant_id: restaurantId,
+            item_key: item.id,
+            count: qty
+          }
+        });
+
+        if (item.variant && item.variant.variantId) {
+          await tx.itemStat.upsert({
+            where: {
+              restaurant_id_item_key: {
+                restaurant_id: restaurantId,
+                item_key: `${item.id}|${item.variant.variantId}`
+              }
+            },
+            update: { count: { increment: qty } },
+            create: {
+              restaurant_id: restaurantId,
+              item_key: `${item.id}|${item.variant.variantId}`,
+              count: qty
+            }
+          });
+        }
+      }
+
       return newOrder;
     });
 

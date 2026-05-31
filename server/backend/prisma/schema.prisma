@@ -174,7 +174,7 @@ model OrderItem {
   price      Decimal? @db.Decimal(10, 2)
   base_price Decimal? @db.Decimal(10, 2)
   quantity   Int?
-  variant    String?
+  variant    Json?
   image      String? @db.VarChar(200)
 
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
@@ -237,8 +237,8 @@ model CartItem {
   restaurant_id   String? @db.VarChar(50)
   restaurant_name String? @db.VarChar(100)
   quantity        Int     @default(1)
-  variant         String?
-  options         String?
+  variant         Json?
+  options         Json?
   image           String? @db.VarChar(200)
 
   user User @relation(fields: [user_id], references: [user])

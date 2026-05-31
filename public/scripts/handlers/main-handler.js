@@ -29,29 +29,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const restaurants = await restaurantService.getAll();
         listContainer.innerHTML = '';
 
-        for (const r of restaurants) {
-            // Cargar top items y menú para este restaurante
-            const topItems = await statsService.getTopItems(r.id, 2);
-            const menuItems = await menuService.getMenu(r.id);
-            
-            // Enriquecer top items con datos completos del menú
-            const enrichedTopItems = topItems.map(top => {
-                const menuItem = menuItems.find(m => m.id === top.itemId);
-                return {
-                    ...top,
-                    ...(menuItem || {})
-                };
-            });
+            for (const r of restaurants) {
+                const topItems = await statsService.getTopItems(r.id, 2);
+                const menuItems = await menuService.getMenu(r.id);
+                
+                const enrichedTopItems = topItems.map(top => {
+                    const menuItem = menuItems.find(m => m.id === top.itemId);
+                    return menuItem ? { ...top, ...menuItem } : null;
+                }).filter(Boolean);
 
-            const card = document.createElement('restaurant-card');
-            card.setAttribute('type', r.type);
-            card.setAttribute('name', r.name);
-            card.setAttribute('logo', r.logo);
-            card.setAttribute('description', r.description);
-            card.setAttribute('url', r.url);
-            card.setAttribute('top-items', JSON.stringify(enrichedTopItems));
-            listContainer.appendChild(card);
-        }
+                const card = document.createElement('restaurant-card');
+                card.setAttribute('type', r.type);
+                card.setAttribute('name', r.name);
+                card.setAttribute('logo', r.logo);
+                card.setAttribute('description', r.description);
+                card.setAttribute('url', r.url);
+                card.setAttribute('top-items', JSON.stringify(enrichedTopItems));
+                listContainer.appendChild(card);
+            }
     } catch (err) {
         console.error('Error cargando restaurantes:', err);
         listContainer.innerHTML = '<p class="error">Error al cargar restaurantes. Intenta más tarde.</p>';
