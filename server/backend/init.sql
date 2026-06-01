@@ -98,6 +98,9 @@ CREATE TABLE IF NOT EXISTS orders (
   total DECIMAL(10,2),
   payment_method VARCHAR(20) DEFAULT 'card',
   delivery_code VARCHAR(20),
+  status VARCHAR(20) DEFAULT 'pending',
+  status_note TEXT,
+  updated_at TIMESTAMP DEFAULT NOW(),
   created_at TIMESTAMP DEFAULT NOW(),
   CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users("user") ON DELETE SET NULL,
   CONSTRAINT fk_order_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE SET NULL
@@ -159,6 +162,15 @@ CREATE TABLE IF NOT EXISTS cart_items (
   options JSONB,
   image VARCHAR(200),
   PRIMARY KEY (id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_restaurants (
+  id SERIAL PRIMARY KEY,
+  user_id VARCHAR(50) NOT NULL REFERENCES users("user") ON DELETE CASCADE,
+  restaurant_id VARCHAR(50) NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
+  role VARCHAR(20) DEFAULT 'staff',
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, restaurant_id)
 );
 
 -- DATOS DE PRUEBA
@@ -357,3 +369,13 @@ INSERT INTO item_stats (restaurant_id, item_key, count) VALUES
 ('cafe', 'c2', 22),
 ('cafe', 'c3', 10)
 ON CONFLICT (restaurant_id, item_key) DO NOTHING;
+
+INSERT INTO user_restaurants (user_id, restaurant_id, role) VALUES
+('admin', 'burgers', 'owner'),
+('test', 'italian', 'manager')
+ON CONFLICT DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_user_status ON orders(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_user_restaurants_user ON user_restaurants(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_restaurants_restaurant ON user_restaurants(restaurant_id);

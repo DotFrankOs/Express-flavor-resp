@@ -115,35 +115,39 @@ export const statsService = {
     }
 
     if (apiConfig.useMock) {
-      const orders = _loadOrders();
-      const order = {
-        id: `ord_${Date.now()}`,
-        userId,
-        restaurantId,
-        restaurantName,
-        items: items.map(item => ({
-          itemId: item.id || item.itemId,
-          name: item.name,
-          baseName: item.baseName || item.name,
-          price: item.price,
-          basePrice: item.basePrice || item.price,
-          quantity: item.quantity,
-          variant: item.variant,
-          options: item.options,
-          image: item.image || null
-        })),
-        total,
-        paymentMethod: paymentMethod || 'card',
-        deliveryCode: deliveryCode || null,
-        createdAt: new Date().toISOString()
-      };
-      orders.unshift(order);
-      _saveOrders(orders);
+        const orders = _loadOrders();
+        const order = {
+          id: `ord_${Date.now()}`,
+          userId,
+          restaurantId,
+          restaurantName,
+          items: items.map(item => ({
+            itemId: item.id || item.itemId,
+            name: item.name,
+            baseName: item.baseName || item.name,
+            price: item.price,
+            basePrice: item.basePrice || item.price,
+            quantity: item.quantity,
+            variant: item.variant,
+            options: item.options,
+            image: item.image || null
+          })),
+          total,
+          paymentMethod: paymentMethod || 'card',
+          deliveryCode: deliveryCode || null,
+          status: 'pending',
+          statusNote: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        orders.unshift(order);
+        _saveOrders(orders);
 
-      _updateUserOrderCount();
-      _notifyOrder();
-      return order;
-    }
+        _updateUserOrderCount();
+        _notifyOrder();
+        return order;
+      }
+
 
     const result = await apiFetch('/orders', {
       method: 'POST',

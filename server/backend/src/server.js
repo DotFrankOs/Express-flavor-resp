@@ -57,6 +57,7 @@ app.use('/api', require('./routes/stats.routes'));
 app.use('/api', require('./routes/report.routes'));
 app.use('/api', require('./routes/exchange.routes'));
 app.use('/api', require('./routes/health.routes'));
+app.use('/api', require('./routes/staff.routes'));
 
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {

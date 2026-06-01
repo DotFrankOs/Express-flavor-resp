@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
     if (userId !== req.userId) return res.status(403).json({ error: 'No autorizado' });
 
     const orderId = `ord_${Date.now()}`;
-    const createdAt = new Date();
+    const now = new Date();
 
     const order = await prisma.$transaction(async (tx) => {
       const newOrder = await tx.order.create({
@@ -18,7 +18,10 @@ exports.create = async (req, res) => {
           total,
           payment_method: paymentMethod || 'card',
           delivery_code: deliveryCode || null,
-          created_at: createdAt 
+          status: 'pending',
+          status_note: null,
+          created_at: now,
+          updated_at: now
         }
       });
 
@@ -26,13 +29,9 @@ exports.create = async (req, res) => {
         const orderItemId = `${orderId}_${item.id}`;
         await tx.orderItem.create({
           data: {
-            id: orderItemId, 
-            order_id: orderId, 
-            item_id: item.id,
-            name: item.name, 
-            base_name: item.baseName || item.name,
-            price: item.price, 
-            base_price: item.basePrice || item.price,
+            id: orderItemId, order_id: orderId, item_id: item.id,
+            name: item.name, base_name: item.baseName || item.name,
+            price: item.price, base_price: item.basePrice || item.price,
             quantity: item.quantity,
             variant: item.variant ? JSON.stringify(item.variant) : null,
             image: item.image || null
@@ -43,8 +42,7 @@ exports.create = async (req, res) => {
             await tx.orderItemOption.create({
               data: {
                 order_item_id: orderItemId,
-                choice_id: opt.choiceId, 
-                choice_name: opt.choiceName,
+                choice_id: opt.choiceId, choice_name: opt.choiceName,
                 price_modifier: opt.priceModifier || 0
               }
             });
@@ -52,43 +50,22 @@ exports.create = async (req, res) => {
         }
       }
 
-      await tx.user.update({ 
-        where: { user: userId }, 
-        data: { orders_count: { increment: 1 } } 
-      });
+      await tx.user.update({ where: { user: userId }, data: { orders_count: { increment: 1 } } });
 
       for (const item of items) {
         if (!item.id) continue;
         const qty = item.quantity || 1;
         await tx.itemStat.upsert({
-          where: { 
-            restaurant_id_item_key: { 
-              restaurant_id: restaurantId, 
-              item_key: item.id 
-            } 
-          },
+          where: { restaurant_id_item_key: { restaurant_id: restaurantId, item_key: item.id } },
           update: { count: { increment: qty } },
-          create: { 
-            restaurant_id: restaurantId, 
-            item_key: item.id, 
-            count: qty 
-          }
+          create: { restaurant_id: restaurantId, item_key: item.id, count: qty }
         });
         if (item.variant && item.variant.variantId) {
           const vKey = `${item.id}|${item.variant.variantId}`;
           await tx.itemStat.upsert({
-            where: { 
-              restaurant_id_item_key: { 
-                restaurant_id: restaurantId, 
-                item_key: vKey 
-              } 
-            },
+            where: { restaurant_id_item_key: { restaurant_id: restaurantId, item_key: vKey } },
             update: { count: { increment: qty } },
-            create: { 
-              restaurant_id: restaurantId, 
-              item_key: vKey, 
-              count: qty 
-            }
+            create: { restaurant_id: restaurantId, item_key: vKey, count: qty }
           });
         }
       }
@@ -103,9 +80,11 @@ exports.create = async (req, res) => {
       restaurantName, 
       items, 
       total, 
-      paymentMethod: paymentMethod || 'card',
-      deliveryCode: deliveryCode || null,
-      createdAt 
+      paymentMethod: order.payment_method,
+      deliveryCode: order.delivery_code,
+      status: order.status,
+      statusNote: order.status_note,
+      createdAt: now 
     });
   } catch (err) {
     console.error('Create order error:', err);
@@ -120,11 +99,7 @@ exports.getByUser = async (req, res) => {
     const ordersResult = await prisma.order.findMany({
       where: { user_id: req.params.userId },
       orderBy: { created_at: 'desc' },
-      include: { 
-        items: { 
-          include: { options: true } 
-        } 
-      }
+      include: { items: { include: { options: true } } }
     });
     
     const orders = ordersResult.map(o => ({
@@ -147,13 +122,46 @@ exports.getByUser = async (req, res) => {
         })),
         image: item.image
       })),
-      total: parseFloat(o.total),
+      total: parseFloat(o.total), 
       paymentMethod: o.payment_method,
       deliveryCode: o.delivery_code,
-      createdAt: o.created_at
+      status: o.status,
+      statusNote: o.status_note,
+      createdAt: o.created_at,
+      updatedAt: o.updated_at
     }));
     
     res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateStatus = async (req, res) => {
+  try {
+    const { status, statusNote } = req.body;
+    const orderId = req.params.id;
+    
+    const validStatuses = ['pending', 'processing', 'delivering', 'delivered', 'issue'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Estado no válido' });
+    }
+
+    const updated = await prisma.order.update({
+      where: { id: orderId },
+      data: { 
+        status,
+        status_note: statusNote || null,
+        updated_at: new Date()
+      }
+    });
+
+    res.json({
+      id: updated.id,
+      status: updated.status,
+      statusNote: updated.status_note,
+      updatedAt: updated.updated_at
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
