@@ -8,3 +8,4 @@
 node_modules/
 *.log
 server/backend/logs/
+logs/
