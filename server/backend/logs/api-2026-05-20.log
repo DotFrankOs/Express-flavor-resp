@@ -1,9 +1,0 @@
-[2026-05-20T16:44:55.829Z] [INFO] === INFORMACIÓN DE PUERTOS === 
-[2026-05-20T16:44:55.831Z] [INFO] Servidor corriendo en: http://localhost:3000 
-[2026-05-20T16:44:55.831Z] [INFO] API Base URL: http://localhost:3000/api 
-[2026-05-20T16:44:55.832Z] [INFO] También disponible en: http://172.19.0.2:3000 
-[2026-05-20T16:44:55.832Z] [INFO] Puertos expuestos en Docker: 
-[2026-05-20T16:44:55.832Z] [INFO]   - Backend: 3000 
-[2026-05-20T16:44:55.832Z] [INFO]   - PostgreSQL: 5432 
-[2026-05-20T16:44:55.832Z] [INFO] ============================== 
-[2026-05-20T16:44:55.833Z] [INFO] Servidor Express Flavor iniciado correctamente 

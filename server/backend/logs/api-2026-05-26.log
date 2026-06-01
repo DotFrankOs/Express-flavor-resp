@@ -1,9 +1,0 @@
-[2026-05-26T03:58:12.218Z] [INFO] === INFORMACIÓN DE PUERTOS === 
-[2026-05-26T03:58:12.262Z] [INFO] Servidor corriendo en: http://localhost:3000 
-[2026-05-26T03:58:12.262Z] [INFO] API Base URL: http://localhost:3000/api 
-[2026-05-26T03:58:12.264Z] [INFO] También disponible en: http://172.18.0.3:3000 
-[2026-05-26T03:58:12.264Z] [INFO] Puertos expuestos en Docker: 
-[2026-05-26T03:58:12.264Z] [INFO]   - Backend: 3000 
-[2026-05-26T03:58:12.264Z] [INFO]   - PostgreSQL: 5432 
-[2026-05-26T03:58:12.264Z] [INFO] ============================== 
-[2026-05-26T03:58:12.264Z] [INFO] Servidor Express Flavor con Prisma iniciado correctamente 
