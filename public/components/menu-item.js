@@ -1,4 +1,5 @@
 import { currencyService } from '../scripts/currency/currencyService.js';
+import { cartService } from '../scripts/cart/cartService.js';
 
 class MenuItemComponent extends HTMLElement {
   static get observedAttributes() {
@@ -46,7 +47,6 @@ class MenuItemComponent extends HTMLElement {
     return absFormatted;
   }
 
-
   _render() {
     const item = this._item;
     if (!item) {
@@ -65,7 +65,7 @@ class MenuItemComponent extends HTMLElement {
         <div class="content">
           <h4>${item.name}</h4>
           <p class="description">${item.description || ''}</p>
-          ${hasOptions ? `<span class="has-options"> Personalizable</span>` : ''}
+          ${hasOptions ? `<span class="has-options">Personalizable</span>` : ''}
           <div class="price">${this._formatPrice(item.price)}</div>
           <button class="add-btn" data-action="open-modal">
             ${hasOptions ? 'Personalizar' : 'Agregar al carrito'}
@@ -74,7 +74,6 @@ class MenuItemComponent extends HTMLElement {
       </div>
     `;
 
-    // Eventos
     const card = this.querySelector('.menu-item');
     const btn = this.querySelector('.add-btn');
 
@@ -92,8 +91,7 @@ class MenuItemComponent extends HTMLElement {
     });
   }
 
-  /* ========== AGREGAR DIRECTO (sin opciones) ========== */
-  _addToCartDirect() {
+  async _addToCartDirect() {
     const item = this._item;
     const cartItem = {
       id: item.id,
@@ -108,13 +106,17 @@ class MenuItemComponent extends HTMLElement {
       options: [],
       image: item.image || null
     };
+    
+    await cartService.addItem(cartItem);
+    
     this._dispatchAdd(cartItem);
+    
     this._flashButton(this.querySelector('.add-btn'));
   }
 
   /* ========== MODAL ========== */
   _openModal() {
-    if (this._modal) return; // ya abierto
+    if (this._modal) return;
 
     const item = this._item;
     const overlay = document.createElement('div');
@@ -122,10 +124,8 @@ class MenuItemComponent extends HTMLElement {
     
     const hasImage = item.image ? `<img src="${item.image}" alt="${item.name}">` : '';
     
-    // Generar HTML de opciones
     let optionsHtml = '';
     
-    // Variantes
     if (item.variants && item.variants.items?.length > 0) {
       const required = item.variants.required;
       optionsHtml += `
@@ -146,7 +146,6 @@ class MenuItemComponent extends HTMLElement {
       `;
     }
 
-    // Opciones adicionales
     if (item.options && item.options.length > 0) {
       item.options.forEach(opt => {
         optionsHtml += `<div class="modal-section">
@@ -212,9 +211,8 @@ class MenuItemComponent extends HTMLElement {
 
     document.body.appendChild(overlay);
     this._modal = overlay;
-    document.body.style.overflow = 'hidden'; // bloquear scroll
+    document.body.style.overflow = 'hidden';
 
-    // Eventos del modal
     const closeBtn = overlay.querySelector('.item-modal-close');
     closeBtn.addEventListener('click', () => this._closeModal());
 
@@ -222,15 +220,12 @@ class MenuItemComponent extends HTMLElement {
       if (e.target === overlay) this._closeModal();
     });
 
-    // Cambios en selects/checkboxes actualizan precio
     overlay.querySelectorAll('select, input[type="checkbox"]').forEach(el => {
       el.addEventListener('change', () => this._updateModalPrice());
     });
 
-    // Botón confirmar
     overlay.querySelector('.modal-add-btn').addEventListener('click', () => this._confirmModal());
     
-    // Tecla ESC
     this._escHandler = (e) => { if (e.key === 'Escape') this._closeModal(); };
     document.addEventListener('keydown', this._escHandler);
 
@@ -250,48 +245,47 @@ class MenuItemComponent extends HTMLElement {
   }
 
   _updateModalPrice() {
-  if (!this._modal) return;
-  const item = this._item;
-  let total = item.price;
+    if (!this._modal) return;
+    const item = this._item;
+    let total = item.price;
 
-  // Variante
-  const variantSelect = this._modal.querySelector('select[data-type="variant"]');
-  if (variantSelect && variantSelect.value) {
-    total = Number(variantSelect.selectedOptions[0].dataset.price);
-  }
+    const variantSelect = this._modal.querySelector('select[data-type="variant"]');
+    if (variantSelect && variantSelect.value) {
+      total = Number(variantSelect.selectedOptions[0].dataset.price);
+    }
 
-  // Opciones single
-  this._modal.querySelectorAll('select[data-option-id]').forEach(sel => {
-    if (sel.value) total += Number(sel.selectedOptions[0].dataset.price);
-  });
-
-  this._modal.querySelectorAll('.modal-checkbox-group').forEach(group => {
-    group.querySelectorAll('input:checked').forEach(chk => {
-      total += Number(chk.dataset.price);
+    this._modal.querySelectorAll('select[data-option-id]').forEach(sel => {
+      if (sel.value) total += Number(sel.selectedOptions[0].dataset.price);
     });
-  });
 
-  const originalEl = this._modal.querySelector('.modal-price-value .original');
-  const currentEl = this._modal.querySelector('.modal-price-value .current');
+    this._modal.querySelectorAll('.modal-checkbox-group').forEach(group => {
+      group.querySelectorAll('input:checked').forEach(chk => {
+        total += Number(chk.dataset.price);
+      });
+    });
 
-  currentEl.classList.remove('price-up', 'price-down');
+    const originalEl = this._modal.querySelector('.modal-price-value .original');
+    const currentEl = this._modal.querySelector('.modal-price-value .current');
 
-  if (total > item.price) {
-    originalEl.style.display = 'inline';
-    originalEl.textContent = this._formatPrice(item.price);
-    currentEl.textContent = this._formatPrice(total);
-    currentEl.classList.add('price-up');
-  } else if (total < item.price) {
-    originalEl.style.display = 'inline';
-    originalEl.textContent = this._formatPrice(item.price);
-    currentEl.textContent = this._formatPrice(total);
-    currentEl.classList.add('price-down');
-  } else {
-    originalEl.style.display = 'none';
-    currentEl.textContent = this._formatPrice(item.price);
+    currentEl.classList.remove('price-up', 'price-down');
+
+    if (total > item.price) {
+      originalEl.style.display = 'inline';
+      originalEl.textContent = this._formatPrice(item.price);
+      currentEl.textContent = this._formatPrice(total);
+      currentEl.classList.add('price-up');
+    } else if (total < item.price) {
+      originalEl.style.display = 'inline';
+      originalEl.textContent = this._formatPrice(item.price);
+      currentEl.textContent = this._formatPrice(total);
+      currentEl.classList.add('price-down');
+    } else {
+      originalEl.style.display = 'none';
+      currentEl.textContent = this._formatPrice(item.price);
+    }
   }
-}
-  _confirmModal() {
+
+  async _confirmModal() {
     const item = this._item;
     const errorEl = this._modal.querySelector('.modal-error');
     errorEl.textContent = '';
@@ -309,7 +303,6 @@ class MenuItemComponent extends HTMLElement {
       }
     }
 
-    // Recolectar opciones
     const selectedOptions = [];
     let valid = true;
 
@@ -364,7 +357,10 @@ class MenuItemComponent extends HTMLElement {
       image: item.image || null
     };
 
+    await cartService.addItem(cartItem);
+    
     this._dispatchAdd(cartItem);
+    
     this._closeModal();
   }
 

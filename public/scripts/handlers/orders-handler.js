@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (ordersList) {
       ordersList.innerHTML = `
         <div class="order-empty">
-          <div class="order-empty-icon">🔒</div>
+          <img src="images/svg/lock-icon.svg" alt="Inicia sesión" class="order-empty-icon locked">
           <h3>Inicia sesión para ver tus pedidos</h3>
           <a href="index.html" class="btn-primary">Ir al login</a>
         </div>
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (orders.length === 0) {
       ordersList.innerHTML = `
         <div class="order-empty">
-          <div class="order-empty-icon">🛒</div>
+          <img src="images/svg/empty-orders.svg" alt="Sin pedidos" class="order-empty-icon">
           <h3>Aún no has realizado pedidos</h3>
           <p>Tus compras aparecerán aquí cuando hagas tu primer pedido.</p>
           <a href="restaurantes.html" class="btn-primary">Explorar restaurantes</a>
@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-      // Buscar logo del restaurante
       const restaurant = mockRestaurants.find(r => r.id === order.restaurantId);
       const logo = restaurant ? restaurant.logo : '';
       const hasLogo = logo && logo.trim() !== '';
@@ -77,7 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           `;
         }
 
-        // Imagen del producto (si existe)
         const hasImage = item.image && item.image.trim() !== '';
 
         return `
@@ -137,12 +135,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   } catch (err) {
     console.error('Error cargando pedidos:', err);
-    ordersList.innerHTML = `
-      <div class="order-empty">
-        <div class="order-empty-icon">⚠️</div>
-        <h3>Error al cargar pedidos</h3>
-        <p>Intenta recargar la página.</p>
-      </div>
-    `;
+      ordersList.innerHTML = `
+        <div class="order-empty">
+          <img src="images/svg/warning-icon.svg" alt="Error" class="order-empty-icon">
+          <h3>Error al cargar pedidos</h3>
+          <p>Intenta recargar la página.</p>
+        </div>
+      `;
   }
 });

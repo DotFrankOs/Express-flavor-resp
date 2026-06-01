@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Carrito - Express Flavor</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles/cart-page.css">
+  <link rel="stylesheet" href="styles/alert-style.css">
+  <link rel="stylesheet" href="styles/app-header.css">
+  <script type="module" src="components/app-header.js"></script>
+</head>
+<body class="restaurant-selection">
+  <app-header></app-header>
+
+  <main class="cart-main">
+    <div class="cart-layout">
+      <section class="cart-items-section">
+        <div class="cart-section-header">
+          <h2>
+            <img src="images/svg/cart-icon.svg" alt="" class="section-icon">
+            Mi Carrito
+          </h2>
+          <button id="clear-all-btn" class="clear-all-btn" style="display:none;">
+            <img src="images/svg/trash-icon.svg" alt="" class="btn-icon-sm">
+            Vaciar carrito
+          </button>
+        </div>
+        <div id="cart-items-container">
+          <div class="cart-loading">
+            <div class="spinner"></div>
+            <p>Cargando tu carrito...</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="cart-summary-section">
+        <div class="summary-card sticky">
+          <h3>Resumen del pedido</h3>
+          
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">C$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Envío</span>
+            <span class="free-shipping">Gratis</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">C$0.00</span>
+          </div>
+
+          <div class="payment-section">
+            <h4>
+              <img src="images/svg/payment-icon.svg" alt="" class="section-icon-sm">
+              Método de pago
+            </h4>
+            <div class="payment-options">
+              <label class="payment-option active" data-method="card">
+                <input type="radio" name="payment" value="card" checked>
+                <img src="images/svg/card-icon.svg" alt="" class="payment-svg-icon">
+                <div class="payment-info">
+                  <span class="payment-title">Tarjeta</span>
+                  <span class="payment-desc">Crédito o débito</span>
+                </div>
+              </label>
+              <label class="payment-option" data-method="cash">
+                <input type="radio" name="payment" value="cash">
+                <img src="images/svg/cash-icon.svg" alt="" class="payment-svg-icon">
+                <div class="payment-info">
+                  <span class="payment-title">Efectivo</span>
+                  <span class="payment-desc">Pago al recibir</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <button id="checkout-btn" class="checkout-btn" disabled>
+            <img src="images/svg/lock-icon.svg" alt="" class="btn-icon-sm">
+            Proceder al pago
+          </button>
+          
+          <a href="restaurantes.html" class="continue-shopping">
+            <img src="images/svg/arrow-left-icon.svg" alt="" class="btn-icon-sm">
+            Seguir comprando
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="success-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box success-box">
+      <img src="images/svg/success-icon.svg" alt="" class="success-svg">
+      <h3>¡Pedido confirmado!</h3>
+      <p id="success-message">Tu pedido ha sido procesado correctamente.</p>
+      
+      <div id="cash-code-section" class="cash-code-box" style="display:none;">
+        <p class="code-label">Código para el repartidor:</p>
+        <div class="delivery-code" id="delivery-code">---</div>
+        <p class="code-hint">Muéstrale este código al recibir tu pedido</p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="view-orders-btn" class="btn-primary">
+          <img src="images/svg/orders-icon.svg" alt="" class="btn-icon-sm">
+          Ver mis pedidos
+        </button>
+        <button id="close-success-btn" class="btn-secondary">Seguir comprando</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="card-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box card-box">
+      <div class="modal-header">
+        <img src="images/svg/card-icon.svg" alt="" class="modal-title-icon">
+        <h3>Pago con tarjeta</h3>
+      </div>
+      <div class="card-form">
+        <div class="form-group">
+          <label>Número de tarjeta</label>
+          <div class="input-wrap">
+            <img src="images/svg/card-number-icon.svg" alt="" class="input-icon">
+            <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" id="card-number">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vencimiento</label>
+            <div class="input-wrap">
+              <img src="images/svg/calendar-icon.svg" alt="" class="input-icon">
+              <input type="text" placeholder="MM/AA" maxlength="5" id="card-expiry">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <div class="input-wrap">
+              <img src="images/svg/lock-icon.svg" alt="" class="input-icon">
+              <input type="text" placeholder="123" maxlength="4" id="card-cvv">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Titular</label>
+          <div class="input-wrap">
+            <img src="images/svg/user-icon.svg" alt="" class="input-icon">
+            <input type="text" placeholder="NOMBRE APELLIDO" id="card-name">
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="confirm-card-btn" class="btn-primary">
+          <img src="images/svg/lock-icon.svg" alt="" class="btn-icon-sm">
+          Pagar <span id="card-amount">C$0.00</span>
+        </button>
+        <button id="cancel-card-btn" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/handlers/cart-handler.js"></script>
+</body>
+</html>

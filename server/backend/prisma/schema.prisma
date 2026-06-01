@@ -156,6 +156,8 @@ model Order {
   restaurant_id   String?  @db.VarChar(50)
   restaurant_name String?  @db.VarChar(100)
   total           Decimal? @db.Decimal(10, 2)
+  payment_method  String?  @default("card") @db.VarChar(20)
+  delivery_code   String?  @db.VarChar(20)
   created_at      DateTime @default(now()) @db.Timestamp()
 
   user       User?       @relation(fields: [user_id], references: [user])

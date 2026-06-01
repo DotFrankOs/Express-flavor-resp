@@ -96,7 +96,11 @@ CREATE TABLE IF NOT EXISTS orders (
   restaurant_id VARCHAR(50),
   restaurant_name VARCHAR(100),
   total DECIMAL(10,2),
-  created_at TIMESTAMP DEFAULT NOW()
+  payment_method VARCHAR(20) DEFAULT 'card',
+  delivery_code VARCHAR(20),
+  created_at TIMESTAMP DEFAULT NOW(),
+  CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users("user") ON DELETE SET NULL,
+  CONSTRAINT fk_order_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS order_items (

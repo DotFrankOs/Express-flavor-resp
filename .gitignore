@@ -4,4 +4,7 @@
 .env.test
 .env.production
 .env.*.local
+.env
 node_modules/
+*.log
+server/backend/logs/

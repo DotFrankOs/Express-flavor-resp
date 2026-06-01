@@ -116,9 +116,24 @@
   padding: 70px 20px;
   color: #888;
 }
+
 .order-empty-icon {
-  font-size: 4rem;
-  margin-bottom: 16px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  opacity: 0.4;
+  filter: brightness(0) saturate(100%) invert(80%) sepia(20%) saturate(300%) hue-rotate(350deg);
+}
+
+.order-empty-state .order-empty-icon {
+  width: 80px;
+  height: 80px;
+  opacity: 0.3;
+}
+
+.order-empty-state .order-empty-icon.locked {
+  opacity: 0.5;
+  filter: brightness(0) saturate(100%) invert(60%) sepia(20%) saturate(300%) hue-rotate(350deg);
 }
 
 .stats-bar {

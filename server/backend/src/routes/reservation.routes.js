@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const { protegerRuta } = require('../middlewares/auth.middleware');
+const ctrl = require('../controllers/reservation.controller');
+router.get('/restaurants/:id/reservations', ctrl.getAll);
+router.post('/restaurants/:id/reservations', protegerRuta, ctrl.create);
+router.put('/restaurants/:id/reservations', protegerRuta, ctrl.replaceAll);
+router.delete('/restaurants/:id/reservations', protegerRuta, ctrl.remove);
+router.get('/reservations/my', protegerRuta, ctrl.getMy);
+module.exports = router;

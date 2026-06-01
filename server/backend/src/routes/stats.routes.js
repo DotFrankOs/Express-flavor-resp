@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const { protegerRuta } = require('../middlewares/auth.middleware');
+const ctrl = require('../controllers/stats.controller');
+router.post('/stats/purchase', protegerRuta, ctrl.recordPurchase);
+router.get('/stats/restaurants/:id', ctrl.getStats);
+router.get('/stats/restaurants/:id/top', ctrl.getTop);
+router.get('/stats/restaurants/:id/items/:itemId', ctrl.getItemCount);
+router.get('/stats/restaurants/:id/items/:itemId/variants', ctrl.getVariants);
+module.exports = router;

@@ -98,7 +98,7 @@ export const statsService = {
   },
 
   async recordOrder(orderData) {
-    const { items, total, restaurantId, restaurantName } = orderData;
+    const { items, total, restaurantId, restaurantName, paymentMethod, deliveryCode } = orderData;
     const userId = _getUser();
     
     for (const item of items) {
@@ -133,6 +133,8 @@ export const statsService = {
           image: item.image || null
         })),
         total,
+        paymentMethod: paymentMethod || 'card',
+        deliveryCode: deliveryCode || null,
         createdAt: new Date().toISOString()
       };
       orders.unshift(order);
@@ -145,7 +147,12 @@ export const statsService = {
 
     const result = await apiFetch('/orders', {
       method: 'POST',
-      body: JSON.stringify({ ...orderData, userId })
+      body: JSON.stringify({ 
+        ...orderData, 
+        userId,
+        paymentMethod: paymentMethod || 'card',
+        deliveryCode: deliveryCode || null
+      })
     });
 
     _updateUserOrderCount();

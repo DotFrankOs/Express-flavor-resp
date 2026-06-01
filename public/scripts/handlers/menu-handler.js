@@ -1,8 +1,6 @@
 import { authService } from '../auth/authService.js';
-import { cartService } from '../cart/cartService.js';
 import { restaurantService } from '../restaurants/restaurantService.js';
 import { menuService } from '../menu/menuService.js';
-import { currencyService } from '../currency/currencyService.js';
 
 function getRestaurantIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -19,8 +17,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userNameEl = document.getElementById('current-user-name');
         if (userNameEl) userNameEl.textContent = currentUser.name || currentUser.user;
     }
-
-    cartService.cleanupOldCarts();
 
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
@@ -39,27 +35,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         logoEl.alt = `Logo ${restaurant.name}`;
         document.body.classList.add(`restaurant-${restaurantId}`);
 
-        const cartEl = document.getElementById('global-cart');
-        if (cartEl) {
-            cartEl.setAttribute('restaurant-id', restaurantId);
-            cartEl.setAttribute('restaurant-name', restaurant.name);
-        }
-
         const menuItems = await menuService.getMenu(restaurantId);
-const menuList = document.getElementById('menu-list');
-menuList.innerHTML = '';
+        const menuList = document.getElementById('menu-list');
+        menuList.innerHTML = '';
 
-if (menuItems.length === 0) {
-    menuList.innerHTML = '<p class="empty">No hay productos disponibles.</p>';
-} else {
-    menuItems.forEach(item => {
-        const menuItemEl = document.createElement('menu-item');
-        menuItemEl.setAttribute('restaurant-id', restaurantId);
-        menuItemEl.setAttribute('restaurant-name', restaurant.name);
-        menuItemEl.item = item;
-        menuList.appendChild(menuItemEl);
-    });
-}
+        if (menuItems.length === 0) {
+            menuList.innerHTML = '<p class="empty">No hay productos disponibles.</p>';
+        } else {
+            menuItems.forEach(item => {
+                const menuItemEl = document.createElement('menu-item');
+                menuItemEl.setAttribute('restaurant-id', restaurantId);
+                menuItemEl.setAttribute('restaurant-name', restaurant.name);
+                menuItemEl.item = item;
+                menuList.appendChild(menuItemEl);
+            });
+        }
 
         const resContainer = document.getElementById('reservation-container');
         if (resContainer) {
