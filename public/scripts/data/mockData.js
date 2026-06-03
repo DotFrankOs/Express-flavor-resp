@@ -90,6 +90,7 @@ export const mockTables = {
     ]
   }
 };
+
 export const mockMenus = {
   burgers: [
     {
@@ -283,7 +284,8 @@ export const mockUsers = [
     avatar: "https://ui-avatars.com/api/?name=Administrador&background=1d05b7&color=fff&size=128",
     role: "admin",
     favorites: ["burgers", "italian"],
-    ordersCount: 47
+    ordersCount: 47,
+    orders_count: 47
   },
   { 
     user: "test", 
@@ -294,9 +296,11 @@ export const mockUsers = [
     avatar: "https://ui-avatars.com/api/?name=Usuario+Prueba&background=ff4081&color=fff&size=128",
     role: "customer",
     favorites: ["mexican", "cafe"],
-    ordersCount: 12
+    ordersCount: 12,
+    orders_count: 12
   }
 ];
+
 export const mockReports = [];
 
 export const mockReservations = {
@@ -323,17 +327,17 @@ export const mockItemStats = {
     'b2': 11
   },
   italian: {
-    'i2': 18,   // Pizza Margarita
-    'i1': 12    // Pasta Carbonara
+    'i2': 18,
+    'i1': 12
   },
   mexican: {
-    'm1': 21,   // Tacos al Pastor
-    'm2': 8,    // Burrito Supreme
-    'm3': 15    // Nachos Supremos
+    'm1': 21,
+    'm2': 8,
+    'm3': 15
   },
   cafe: {
-    'c1': 30,   // Café Latte (el más vendido)
-    'c2': 22,   // Cheesecake
-    'c3': 10    // Brownie
+    'c1': 30,
+    'c2': 22,
+    'c3': 10
   }
 };

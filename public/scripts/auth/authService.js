@@ -5,6 +5,7 @@ const SESSION_KEY = 'express_flavor_session';
 const TOKEN_KEY = 'express_flavor_token';
 const USERS_KEY = 'express_flavor_users';
 
+
 function _loadUsers() {
   const stored = localStorage.getItem(USERS_KEY);
   if (!stored) return [];
@@ -25,6 +26,32 @@ export const authService = {
     return sessionStorage.getItem(TOKEN_KEY);
   },
 
+  getRole() {
+    const user = this.getCurrentUser();
+    return user?.role || 'guest';
+  },
+
+  async isStaff() {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+
+    if (apiConfig.useMock) {
+      const staffRoles = ['admin', 'owner', 'manager', 'staff'];
+      if (staffRoles.includes(user.role)) return true;
+      return ['admin', 'test'].includes(user.user);
+    }
+    
+    const staffRoles = ['admin', 'owner', 'manager', 'staff'];
+    if (staffRoles.includes(user.role)) return true;
+    
+    try {
+      const response = await apiFetch('/staff/restaurants');
+      return response.length > 0;
+    } catch {
+      return false;
+    }
+  },
+
   logout() {
     sessionStorage.removeItem(SESSION_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
@@ -37,22 +64,31 @@ export const authService = {
       const user = users.find(u => u.user === username && u.pass === password);
       if (!user) throw new Error('Credenciales inválidas');
       const session = {
-        user: user.user, name: user.name, role: user.role,
-        avatar: user.avatar, email: user.email,
-        favorites: user.favorites, ordersCount: user.ordersCount
+        user: user.user, 
+        name: user.name, 
+        role: user.role,
+        avatar: user.avatar, 
+        email: user.email,
+        favorites: user.favorites, 
+        ordersCount: user.ordersCount || user.orders_count || 0
       };
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
       sessionStorage.setItem(TOKEN_KEY, 'mock-token-' + Date.now());
       return session;
     }
+    
     const result = await apiFetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password })
     });
+    
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      user: result.user, name: result.name,
-      email: result.email, avatar: result.avatar,
-      role: result.role, ordersCount: result.ordersCount,
+      user: result.user, 
+      name: result.name,
+      email: result.email, 
+      avatar: result.avatar,
+      role: result.role,
+      ordersCount: result.ordersCount || 0,
       favorites: result.favorites
     }));
     sessionStorage.setItem(TOKEN_KEY, result.token);
@@ -71,12 +107,17 @@ export const authService = {
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       return { ...userData };
     }
+    
     const result = await apiFetch('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData)
     });
+    
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      user: result.user, name: result.name, email: result.email
+      user: result.user, 
+      name: result.name, 
+      email: result.email,
+      role: result.role || 'customer'
     }));
     sessionStorage.setItem(TOKEN_KEY, result.token);
     return result;

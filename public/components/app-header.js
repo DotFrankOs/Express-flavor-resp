@@ -3,19 +3,22 @@ import { cartService } from '../scripts/cart/cartService.js';
 import { currencyService } from '../scripts/currency/currencyService.js';
 import { reservationService } from '../scripts/reservation/reservationService.js';
 import { statsService } from '../scripts/stats/statsService.js';
+import { getRoleLabel } from '../scripts/utils/translator.js'
 
 class AppHeader extends HTMLElement {
   constructor() {
     super();
     this._user = null;
+    this._isStaff = false;
     this._cart = { items: [] };
     this._reservations = [];
     this._orders = [];
   }
 
   async connectedCallback() {
-  try {
+    try {
       this._user = authService.getCurrentUser();
+      this._isStaff = await authService.isStaff();
       await currencyService.init();
       await this._loadData();
       this.render();
@@ -189,7 +192,6 @@ class AppHeader extends HTMLElement {
     this.querySelector('#header-avatar').src = avatar;
     this.querySelector('#header-name').textContent = this._user.name;
 
-    // Stats reales: Pedidos = órdenes, Compras = total items, Favoritos = favoritos
     const totalItemsBought = this._orders.reduce((sum, o) => 
       sum + o.items.reduce((s, i) => s + i.quantity, 0), 0);
     
@@ -235,12 +237,22 @@ class AppHeader extends HTMLElement {
       `;
     }
 
+    const staffLink = this._isStaff ? `
+      <a href="staff-dashboard.html" class="ah-dropdown-btn ah-staff-link" style="margin-bottom:8px;text-align:center;display:block;text-decoration:none;background:linear-gradient(135deg,#8B4513,#A0522D);border-color:#D2691E;color:#f5e6d3;">
+        <img src="images/svg/staff-icon.svg" alt="Staff" class="ah-btn-icon" style="filter:brightness(0)invert(1);">
+        Panel de Staff
+      </a>
+    ` : '';
+
+    const roleLabel = getRoleLabel(this._user.role);
+
     panel.innerHTML = `
       <div class="ah-profile-header">
         <img src="${avatar}" alt="" class="ah-profile-avatar-lg">
         <div>
           <div class="ah-profile-name">${this._user.name}</div>
           <div class="ah-profile-email">${this._user.email || ''}</div>
+          <div class="ah-profile-role" data-role="${this._user.role || 'customer'}">${roleLabel}</div>
         </div>
       </div>
       <div class="ah-profile-stats">
@@ -258,6 +270,7 @@ class AppHeader extends HTMLElement {
         </div>
       </div>
       ${itemsHtml}
+      ${staffLink}
       <a href="orders.html" class="ah-dropdown-btn" style="margin-bottom:8px;text-align:center;display:block;text-decoration:none;">
         <img src="images/svg/orders-icon.svg" alt="Órdenes" class="ah-btn-icon">
         Ver todos mis pedidos
@@ -269,6 +282,13 @@ class AppHeader extends HTMLElement {
   render() {
     const avatar = this._user?.avatar || 
       `https://ui-avatars.com/api/?name=${encodeURIComponent(this._user?.name || 'U')}&background=random`;
+
+    const staffButton = this._isStaff ? `
+      <a href="staff-dashboard.html" class="ah-btn ah-staff-btn" title="Panel de Staff">
+        <img src="images/svg/staff-icon.svg" alt="Staff" class="ah-btn-icon">
+        <span class="ah-btn-label">Staff</span>
+      </a>
+    ` : '';
 
     this.innerHTML = `
       <div class="ah-wrapper">
@@ -282,6 +302,8 @@ class AppHeader extends HTMLElement {
           </a>
 
           <div class="ah-actions">
+            ${staffButton}
+
             <div class="ah-dropdown">
               <button class="ah-btn" id="cart-toggle" title="Tu carrito">
                 <img src="images/svg/cart-icon.svg" alt="Carrito" class="ah-btn-icon">

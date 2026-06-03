@@ -475,3 +475,59 @@ app-header {
     right: 0;
   }
 }
+
+/* Botón de Staff en header */
+.ah-staff-btn {
+  background: linear-gradient(135deg, #8B4513, #A0522D) !important;
+  border: 1px solid #D2691E !important;
+  color: #f5e6d3 !important;
+}
+
+.ah-staff-btn:hover {
+  background: linear-gradient(135deg, #A0522D, #CD853F) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.ah-staff-btn .ah-btn-icon {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+/* Enlace de staff en dropdown */
+.ah-staff-link {
+  background: linear-gradient(135deg, #8B4513, #A0522D) !important;
+  border-color: #D2691E !important;
+  color: #f5e6d3 !important;
+}
+
+.ah-staff-link:hover {
+  background: linear-gradient(135deg, #A0522D, #CD853F) !important;
+}
+
+.ah-staff-link .ah-btn-icon {
+  filter: brightness(0) invert(1);
+}
+
+/* Badge de rol en perfil */
+.ah-profile-role {
+  font-size: 0.75rem;
+  color: #8a7a6a;
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+
+.ah-profile-role[data-role="admin"] {
+  color: #D2691E;
+  font-weight: 600;
+}
+
+.ah-profile-role[data-role="owner"] {
+  color: #CD853F;
+  font-weight: 600;
+}
+
+.ah-profile-role[data-role="manager"] {
+  color: #DEB887;
+  font-weight: 600;
+}

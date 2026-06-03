@@ -18,10 +18,11 @@ model User {
   favorites    String?  @db.VarChar
   orders_count Int      @default(0)
 
-  reservations Reservation[]
-  reports      Report[]
-  orders       Order[]
-  cart_items   CartItem[]
+  reservations   Reservation[]
+  reports        Report[]
+  orders         Order[]
+  cart_items     CartItem[]
+  user_restaurants UserRestaurant[]
 
   @@map("users")
 }
@@ -36,12 +37,13 @@ model Restaurant {
   min_duration Int      @default(1)
   max_duration Int      @default(3)
 
-  menu_items    MenuItem[]
-  tables        Table[]
-  table_layouts TableLayout?
-  reservations  Reservation[]
-  orders        Order[]
-  item_stats    ItemStat[]
+  menu_items     MenuItem[]
+  tables         Table[]
+  table_layouts  TableLayout?
+  reservations   Reservation[]
+  orders         Order[]
+  item_stats     ItemStat[]
+  user_restaurants UserRestaurant[]
 
   @@map("restaurants")
 }
@@ -162,6 +164,7 @@ model Order {
   status_note     String?  @db.Text
   created_at      DateTime @default(now()) @db.Timestamp()
   updated_at      DateTime @default(now()) @db.Timestamp()
+
   user       User?       @relation(fields: [user_id], references: [user])
   restaurant Restaurant? @relation(fields: [restaurant_id], references: [id])
   items      OrderItem[]
@@ -249,4 +252,18 @@ model CartItem {
 
   @@id([id, user_id])
   @@map("cart_items")
+}
+
+model UserRestaurant {
+  id            Int        @id @default(autoincrement())
+  user_id       String     @db.VarChar(50)
+  restaurant_id String     @db.VarChar(50)
+  role          String     @default("staff") @db.VarChar(20)
+  created_at    DateTime   @default(now()) @db.Timestamp()
+
+  user       User       @relation(fields: [user_id], references: [user], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, restaurant_id])
+  @@map("user_restaurants")
 }

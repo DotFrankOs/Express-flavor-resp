@@ -2,6 +2,9 @@ import { authService } from '../auth/authService.js';
 import { staffService } from '../staff/staffService.js';
 import { currencyService } from '../currency/currencyService.js';
 import { alertService } from '../alert/alertService.js';
+import { restaurantService } from '../restaurants/restaurantService.js';
+import { menuService } from '../menu/menuService.js';
+import { getRoleLabel } from '../utils/translator.js';
 
 function getRestaurantIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -19,6 +22,11 @@ let selectedStatus = null;
 
 async function loadDashboard() {
   const restaurantId = getRestaurantIdFromUrl();
+  
+  if (restaurantId) {
+    document.body.classList.add(`restaurant-${restaurantId}`);
+  }
+  
   if (!restaurantId) {
     const myRestaurants = await staffService.getMyRestaurants();
     if (myRestaurants.length > 0) {
@@ -32,13 +40,19 @@ async function loadDashboard() {
   try {
     currentDashboard = await staffService.getDashboard(restaurantId);
     
-    document.getElementById('restaurant-name').textContent = 
-      currentDashboard.restaurantId === 'burgers' ? 'Food Fast Burgers' : 
-      currentDashboard.restaurantId;
-    document.getElementById('staff-role').textContent = currentDashboard.myRole;
+    const restaurant = await restaurantService.getById(restaurantId);
     
-    const logo = currentDashboard.restaurantId === 'burgers' ? 'foot fast burgers.png' : '';
-    document.getElementById('restaurant-logo').src = logo;
+    document.getElementById('restaurant-name').textContent = restaurant?.name || currentDashboard.restaurantId;
+    document.getElementById('staff-role').textContent = getRoleLabel(currentDashboard.myRole);
+    
+    const logoEl = document.getElementById('restaurant-logo');
+    if (restaurant?.logo) {
+      logoEl.src = restaurant.logo;
+      logoEl.alt = `Logo ${restaurant.name}`;
+      logoEl.style.display = '';
+    } else {
+      logoEl.style.display = 'none';
+    }
 
     document.getElementById('stat-today-orders').textContent = currentDashboard.summary.todayOrders;
     document.getElementById('stat-today-revenue').textContent = 
@@ -48,7 +62,7 @@ async function loadDashboard() {
 
     renderOrders(currentDashboard.orders);
     renderReservations(currentDashboard.reservations);
-    renderTopItems(currentDashboard.topItems);
+    await renderTopItems(currentDashboard.topItems);
 
   } catch (err) {
     console.error('Error cargando dashboard:', err);
@@ -89,9 +103,9 @@ function renderOrders(orders, filter = 'all') {
 
     const paymentHtml = order.paymentMethod === 'cash' ? `
       <span class="delivery-code-display" style="font-size:0.75rem;padding:2px 8px;">
-        💵 ${order.deliveryCode}
+        <img src="images/svg/cash-code-icon.svg" alt="" class="payment-badge-icon"> ${order.deliveryCode}
       </span>
-    ` : '<span style="font-size:0.75rem;color:#8a7a6a;">💳 Tarjeta</span>';
+    ` : '<span style="font-size:0.75rem;color:#8a7a6a;"><img src="images/svg/card-icon.svg" alt="" class="payment-badge-icon"> Tarjeta</span>';
 
     return `
       <div class="staff-order-card" data-order-id="${order.id}">
@@ -121,7 +135,7 @@ function renderOrders(orders, filter = 'all') {
         
         ${order.statusNote ? `
           <div class="status-note" style="margin-top:10px;">
-            ⚠️ ${order.statusNote}
+            <img src="images/svg/alert-triangle-icon.svg" alt="" class="status-note-icon"> ${order.statusNote}
           </div>
         ` : ''}
       </div>
@@ -154,13 +168,13 @@ function renderReservations(reservations) {
       <div class="reservation-table">Mesa ${r.number}</div>
       <div class="reservation-code">${r.code}</div>
       <div class="reservation-time">
-        🕐 ${formatTime(r.startTime)} - ${formatTime(r.endTime)}
+        <img src="images/svg/clock-icon.svg" alt="" class="timeline-icon"> ${formatTime(r.startTime)} - ${formatTime(r.endTime)}
       </div>
     </div>
   `).join('');
 }
 
-function renderTopItems(topItems) {
+async function renderTopItems(topItems) {
   const container = document.getElementById('top-items-list');
   
   if (topItems.length === 0) {
@@ -168,15 +182,36 @@ function renderTopItems(topItems) {
     return;
   }
 
+  const restaurantId = getRestaurantIdFromUrl();
+  let menuItems = [];
+  
+  try {
+    menuItems = await menuService.getMenu(restaurantId);
+  } catch (e) {
+    console.warn('No se pudo cargar el menú para estadísticas:', e);
+  }
+
   const rankClasses = ['gold', 'silver', 'bronze', ''];
 
-  container.innerHTML = topItems.map((item, idx) => `
-    <div class="top-item-row">
-      <div class="top-item-rank ${rankClasses[idx] || ''}">${idx + 1}</div>
-      <div class="top-item-name">${item.itemKey}</div>
-      <div class="top-item-count">${item.count} vendidos</div>
-    </div>
-  `).join('');
+  container.innerHTML = topItems.map((item, idx) => {
+    const menuItem = menuItems.find(m => m.id === item.itemKey);
+    const displayName = menuItem?.name || item.itemKey;
+    const displayImage = menuItem?.image ? `
+      <img src="${menuItem.image}" alt="${displayName}" class="top-item-img" onerror="this.style.display='none'">
+    ` : '<div class="top-item-img" style="display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);color:#8a7a6a;font-size:1.2rem;font-weight:700;">' + displayName.charAt(0) + '</div>';
+
+    return `
+      <div class="top-item-row">
+        <div class="top-item-rank ${rankClasses[idx] || ''}">${idx + 1}</div>
+        ${displayImage}
+        <div class="top-item-info">
+          <div class="top-item-name">${displayName}</div>
+          ${menuItem?.description ? `<div class="top-item-desc">${menuItem.description.substring(0, 60)}${menuItem.description.length > 60 ? '...' : ''}</div>` : ''}
+        </div>
+        <div class="top-item-count">${item.count} vendidos</div>
+      </div>
+    `;
+  }).join('');
 }
 
 function openStatusModal(orderId) {
@@ -197,11 +232,14 @@ function openStatusModal(orderId) {
   document.getElementById('issue-note-group').style.display = 'none';
   document.getElementById('issue-note').value = '';
   
-  document.getElementById('status-modal').style.display = 'flex';
+  const modal = document.getElementById('status-modal');
+  modal.style.display = 'flex';
+  modal.offsetHeight;
 }
 
 function closeStatusModal() {
-  document.getElementById('status-modal').style.display = 'none';
+  const modal = document.getElementById('status-modal');
+  modal.style.display = 'none';
   selectedOrderId = null;
   selectedStatus = null;
 }
@@ -234,6 +272,15 @@ async function saveStatusChange() {
 document.addEventListener('DOMContentLoaded', async () => {
   if (!authService.isLoggedIn()) {
     window.location.href = 'index.html';
+    return;
+  }
+
+  const isStaff = await authService.isStaff();
+  if (!isStaff) {
+    alertService.show('No tienes permisos para acceder al panel de staff', 'error');
+    setTimeout(() => {
+      window.location.href = 'restaurantes.html';
+    }, 1500);
     return;
   }
 
@@ -274,5 +321,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('status-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeStatusModal();
+  });
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeStatusModal();
   });
 });

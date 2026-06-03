@@ -1,10 +1,177 @@
-/* ===== FONDO: Mismo tono que el menú de restaurantes ===== */
+/* ===== FONDO BASE (sin restaurante específico) ===== */
 body.staff-panel {
   background: linear-gradient(135deg, #1a120e 0%, #2c1e14 50%, #3d2b1f 100%);
   min-height: 100vh;
   color: #f5e6d3;
 }
 
+/* ----------------- COLORES POR RESTAURANTE ----------------- */
+
+/* === BURGERS === */
+body.staff-panel.restaurant-burgers {
+  background: linear-gradient(135deg, #e09302 0%, #d89906 50%, #b87200 100%);
+}
+body.staff-panel.restaurant-burgers .staff-restaurant-header,
+body.staff-panel.restaurant-burgers .staff-stat-card,
+body.staff-panel.restaurant-burgers .staff-order-card,
+body.staff-panel.restaurant-burgers .staff-reservation-card,
+body.staff-panel.restaurant-burgers .top-item-row,
+body.staff-panel.restaurant-burgers .status-option {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+body.staff-panel.restaurant-burgers .staff-restaurant-header {
+  background: rgba(0, 0, 0, 0.35);
+}
+body.staff-panel.restaurant-burgers .staff-tab.active {
+  background: rgba(0, 0, 0, 0.3);
+}
+body.staff-panel.restaurant-burgers .filter-btn:hover,
+body.staff-panel.restaurant-burgers .filter-btn.active {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+body.staff-panel.restaurant-burgers .btn-status-change {
+  background: rgba(0, 0, 0, 0.25);
+}
+body.staff-panel.restaurant-burgers .btn-status-change:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+body.staff-panel.restaurant-burgers .staff-role-badge {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff5d6;
+}
+body.staff-panel.restaurant-burgers .stat-icon {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(50%) saturate(300%) hue-rotate(350deg);
+}
+body.staff-panel.restaurant-burgers .live-dot {
+  box-shadow: 0 0 8px #ffd700;
+}
+
+/* === ITALIAN === */
+body.staff-panel.restaurant-italian {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+}
+body.staff-panel.restaurant-italian .staff-restaurant-header,
+body.staff-panel.restaurant-italian .staff-stat-card,
+body.staff-panel.restaurant-italian .staff-order-card,
+body.staff-panel.restaurant-italian .staff-reservation-card,
+body.staff-panel.restaurant-italian .top-item-row,
+body.staff-panel.restaurant-italian .status-option {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+body.staff-panel.restaurant-italian .staff-restaurant-header {
+  background: rgba(0, 0, 0, 0.3);
+}
+body.staff-panel.restaurant-italian .staff-tab.active {
+  background: rgba(0, 0, 0, 0.25);
+}
+body.staff-panel.restaurant-italian .filter-btn:hover,
+body.staff-panel.restaurant-italian .filter-btn.active {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+body.staff-panel.restaurant-italian .btn-status-change {
+  background: rgba(0, 0, 0, 0.2);
+}
+body.staff-panel.restaurant-italian .btn-status-change:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+body.staff-panel.restaurant-italian .staff-role-badge {
+  background: rgba(0, 0, 0, 0.25);
+  color: #e8f5e9;
+}
+body.staff-panel.restaurant-italian .stat-icon {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(20%) saturate(200%) hue-rotate(80deg);
+}
+body.staff-panel.restaurant-italian .live-dot {
+  box-shadow: 0 0 8px #a5d6a7;
+}
+
+/* === MEXICAN === */
+body.staff-panel.restaurant-mexican {
+  background: linear-gradient(135deg, #c20b0b 0%, #d84315 50%, #ff6f00 100%);
+}
+body.staff-panel.restaurant-mexican .staff-restaurant-header,
+body.staff-panel.restaurant-mexican .staff-stat-card,
+body.staff-panel.restaurant-mexican .staff-order-card,
+body.staff-panel.restaurant-mexican .staff-reservation-card,
+body.staff-panel.restaurant-mexican .top-item-row,
+body.staff-panel.restaurant-mexican .status-option {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 200, 100, 0.3);
+}
+body.staff-panel.restaurant-mexican .staff-restaurant-header {
+  background: rgba(0, 0, 0, 0.35);
+}
+body.staff-panel.restaurant-mexican .staff-tab.active {
+  background: rgba(0, 0, 0, 0.3);
+}
+body.staff-panel.restaurant-mexican .filter-btn:hover,
+body.staff-panel.restaurant-mexican .filter-btn.active {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 200, 100, 0.5);
+}
+body.staff-panel.restaurant-mexican .btn-status-change {
+  background: rgba(0, 0, 0, 0.25);
+}
+body.staff-panel.restaurant-mexican .btn-status-change:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+body.staff-panel.restaurant-mexican .staff-role-badge {
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffe0b2;
+}
+body.staff-panel.restaurant-mexican .stat-icon {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(30%) saturate(400%) hue-rotate(350deg);
+}
+body.staff-panel.restaurant-mexican .live-dot {
+  box-shadow: 0 0 8px #ffab91;
+}
+
+/* === CAFE === */
+body.staff-panel.restaurant-cafe {
+  background: linear-gradient(135deg, #5d4037 0%, #8d6e63 50%, #a1887f 100%);
+}
+body.staff-panel.restaurant-cafe .staff-restaurant-header,
+body.staff-panel.restaurant-cafe .staff-stat-card,
+body.staff-panel.restaurant-cafe .staff-order-card,
+body.staff-panel.restaurant-cafe .staff-reservation-card,
+body.staff-panel.restaurant-cafe .top-item-row,
+body.staff-panel.restaurant-cafe .status-option {
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+body.staff-panel.restaurant-cafe .staff-restaurant-header {
+  background: rgba(0, 0, 0, 0.25);
+}
+body.staff-panel.restaurant-cafe .staff-tab.active {
+  background: rgba(0, 0, 0, 0.2);
+}
+body.staff-panel.restaurant-cafe .filter-btn:hover,
+body.staff-panel.restaurant-cafe .filter-btn.active {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+body.staff-panel.restaurant-cafe .btn-status-change {
+  background: rgba(0, 0, 0, 0.15);
+}
+body.staff-panel.restaurant-cafe .btn-status-change:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+body.staff-panel.restaurant-cafe .staff-role-badge {
+  background: rgba(0, 0, 0, 0.2);
+  color: #efebe9;
+}
+body.staff-panel.restaurant-cafe .stat-icon {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(100%) hue-rotate(320deg);
+}
+body.staff-panel.restaurant-cafe .live-dot {
+  box-shadow: 0 0 8px #d7ccc8;
+}
+
+/* ===== ESTRUCTURA BASE ===== */
 .staff-main {
   max-width: 1200px;
   margin: 0 auto;
@@ -18,7 +185,6 @@ body.staff-panel {
   align-items: center;
   gap: 20px;
   padding: 24px;
-  background: rgba(45, 30, 18, 0.9);
   border-radius: 20px;
   border: 1px solid rgba(117, 86, 60, 0.3);
   margin-bottom: 24px;
@@ -30,8 +196,8 @@ body.staff-panel {
   height: 64px;
   border-radius: 16px;
   object-fit: cover;
-  border: 2px solid rgba(117, 86, 60, 0.5);
-  background: #2a1d12;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .staff-restaurant-info h1 {
@@ -43,8 +209,6 @@ body.staff-panel {
 .staff-role-badge {
   display: inline-block;
   padding: 4px 12px;
-  background: rgba(117, 86, 60, 0.3);
-  color: #c4a882;
   border-radius: 20px;
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -68,7 +232,6 @@ body.staff-panel {
   background: #22c55e;
   border-radius: 50%;
   animation: pulse-live 2s infinite;
-  box-shadow: 0 0 8px #22c55e;
 }
 
 @keyframes pulse-live {
@@ -97,7 +260,6 @@ body.staff-panel {
 }
 
 .staff-stat-card {
-  background: rgba(45, 30, 18, 0.85);
   border-radius: 16px;
   padding: 20px;
   border: 1px solid rgba(117, 86, 60, 0.25);
@@ -115,8 +277,9 @@ body.staff-panel {
   width: 32px;
   height: 32px;
   margin-bottom: 12px;
-  opacity: 0.7;
-  filter: brightness(0) saturate(100%) invert(80%) sepia(20%) saturate(300%) hue-rotate(350deg);
+  opacity: 0.8;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .stat-value {
@@ -141,7 +304,7 @@ body.staff-panel {
 }
 
 .staff-tab {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
@@ -160,13 +323,14 @@ body.staff-panel {
 }
 
 .staff-tab.active {
-  background: rgba(117, 86, 60, 0.25);
   color: #f5e6d3;
 }
 
 .tab-icon {
   width: 18px;
   height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .staff-tab-content {
@@ -212,9 +376,7 @@ body.staff-panel {
 }
 
 .filter-btn:hover, .filter-btn.active {
-  background: rgba(117, 86, 60, 0.3);
   color: #f5e6d3;
-  border-color: #75563c;
 }
 
 /* ===== LISTA DE PEDIDOS ===== */
@@ -225,7 +387,6 @@ body.staff-panel {
 }
 
 .staff-order-card {
-  background: rgba(45, 30, 18, 0.85);
   border-radius: 16px;
   padding: 20px;
   border: 1px solid rgba(117, 86, 60, 0.2);
@@ -296,18 +457,16 @@ body.staff-panel {
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
 .btn-status-change {
-  background: rgba(117, 86, 60, 0.3);
   color: #c4a882;
 }
 
 .btn-status-change:hover {
-  background: #75563c;
   color: #f5e6d3;
 }
 
@@ -319,7 +478,6 @@ body.staff-panel {
 }
 
 .staff-reservation-card {
-  background: rgba(45, 30, 18, 0.85);
   border-radius: 16px;
   padding: 20px;
   border: 1px solid rgba(117, 86, 60, 0.2);
@@ -343,6 +501,9 @@ body.staff-panel {
 .reservation-time {
   color: #a09080;
   font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* ===== TOP ITEMS ===== */
@@ -357,7 +518,6 @@ body.staff-panel {
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  background: rgba(45, 30, 18, 0.85);
   border-radius: 14px;
   border: 1px solid rgba(117, 86, 60, 0.2);
 }
@@ -400,9 +560,54 @@ body.staff-panel {
   font-weight: 600;
 }
 
-/* ===== MODAL DE ESTADO ===== */
+/* ===== MODAL OVERLAY CENTRADO ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-overlay[style*="display:none"],
+.modal-overlay[style*="display: none"] {
+  display: none !important;
+}
+
+.modal-box {
+  background: #2a1d12;
+  border-radius: 20px;
+  border: 1px solid rgba(117, 86, 60, 0.4);
+  padding: 28px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  color: #f5e6d3;
+  box-sizing: border-box;
+}
+
 .status-modal-box {
   max-width: 360px;
+}
+
+.status-modal-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+}
+
+.status-modal-box #status-order-info {
+  color: #8a7a6a;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
 }
 
 .status-options {
@@ -424,6 +629,10 @@ body.staff-panel {
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .status-option:hover {
@@ -440,6 +649,7 @@ body.staff-panel {
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .status-dot.pending { background: #eab308; }
@@ -473,11 +683,77 @@ body.staff-panel {
   color: #f5e6d3;
   resize: vertical;
   font-family: inherit;
+  font-size: 0.9rem;
+  box-sizing: border-box;
 }
 
 .status-modal-box textarea:focus {
   outline: none;
   border-color: #75563c;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #01b1d4, #ff80ab);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: #c4a882;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.18);
+  color: #f5e6d3;
+}
+
+/* ===== ICONOS SVG CONTROLADOS ===== */
+.payment-badge-icon,
+.status-note-icon,
+.timeline-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.status-note-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.4;
+  margin-bottom: 12px;
+  object-fit: contain;
 }
 
 /* ===== SPINNER ===== */
@@ -500,6 +776,47 @@ body.staff-panel {
   to { transform: rotate(360deg); }
 }
 
+.top-item-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(117, 86, 60, 0.3);
+  background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.top-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-item-desc {
+  font-size: 0.75rem;
+  color: #8a7a6a;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+@media (max-width: 500px) {
+  .top-item-img {
+    width: 40px;
+    height: 40px;
+  }
+  .top-item-desc {
+    display: none;
+  }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .staff-restaurant-header {
@@ -512,5 +829,9 @@ body.staff-panel {
   .staff-tabs {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+  .modal-box {
+    margin: 20px;
+    max-width: calc(100% - 40px);
   }
 }

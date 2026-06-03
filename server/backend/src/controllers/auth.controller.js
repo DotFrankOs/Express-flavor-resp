@@ -60,7 +60,8 @@ exports.register = async (req, res) => {
       token,
       user: newUser.user,
       name: newUser.name,
-      email: newUser.email || ''
+      email: newUser.email || '',
+      role: newUser.role
     });
   } catch (err) {
     console.error('Register error:', err);
