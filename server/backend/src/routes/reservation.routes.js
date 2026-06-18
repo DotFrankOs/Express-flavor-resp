@@ -1,10 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const { protegerRuta } = require('../middlewares/auth.middleware');
-const ctrl = require('../controllers/reservation.controller');
-router.get('/restaurants/:id/reservations', ctrl.getAll);
-router.post('/restaurants/:id/reservations', protegerRuta, ctrl.create);
-router.put('/restaurants/:id/reservations', protegerRuta, ctrl.replaceAll);
-router.delete('/restaurants/:id/reservations', protegerRuta, ctrl.remove);
-router.get('/reservations/my', protegerRuta, ctrl.getMy);
+const reservationController = require('../controllers/reservation.controller');
+const { reservationValidator } = require('../middlewares/validators');
+
+router.get('/restaurants/:id/reservations', reservationController.getAll);
+router.post(
+  '/restaurants/:id/reservations',
+  protegerRuta,
+  reservationValidator.validateCreate,
+  reservationController.create
+);
+router.put(
+  '/restaurants/:id/reservations',
+  protegerRuta,
+  reservationValidator.validateReplaceAll,
+  reservationController.replaceAll
+);
+router.delete(
+  '/restaurants/:id/reservations',
+  protegerRuta,
+  reservationValidator.validateRemove,
+  reservationController.remove
+);
+router.get('/reservations/my', protegerRuta, reservationController.getMy);
+
 module.exports = router;

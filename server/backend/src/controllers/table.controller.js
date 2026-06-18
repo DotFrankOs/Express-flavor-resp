@@ -1,23 +1,20 @@
-const prisma = require('../lib/prisma');
+const { tableService } = require('../services');
+const { TableDTO, TableLayoutDTO } = require('../dto');
 
-exports.getTables = async (req, res) => {
+exports.getTables = async (req, res, next) => {
   try {
-    const rows = await prisma.table.findMany({
-      where: { restaurant_id: req.params.id },
-      orderBy: { id: 'asc' }
-    });
-    res.json(rows.map(t => ({ id: t.id, name: t.name, label: t.label, style: t.style })));
+    const data = await tableService.getTablesByRestaurantId(req.params.id);
+    res.json(TableDTO.fromRawList(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getLayout = async (req, res) => {
+exports.getLayout = async (req, res, next) => {
   try {
-    const l = await prisma.tableLayout.findUnique({ where: { restaurant_id: req.params.id } });
-    if (!l) return res.json({ columns: 5, gap: '10px' });
-    res.json({ columns: l.columns, gap: l.gap });
+    const data = await tableService.getLayoutByRestaurantId(req.params.id);
+    res.json(TableLayoutDTO.fromRaw(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };

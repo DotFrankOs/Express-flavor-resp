@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/menu.controller');
-router.get('/restaurants/:id/menu', ctrl.getMenu);
+const menuController = require('../controllers/menu.controller');
+
+router.get('/restaurants/:id/menu', menuController.getMenu);
+
 module.exports = router;

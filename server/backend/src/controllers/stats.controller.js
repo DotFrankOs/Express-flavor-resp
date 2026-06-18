@@ -1,80 +1,52 @@
-const prisma = require('../lib/prisma');
+const { statsService } = require('../services');
+const { ItemStatDTO } = require('../dto');
 
-exports.recordPurchase = async (req, res) => {
+exports.recordPurchase = async (req, res, next) => {
   try {
     const { restaurantId, itemId, quantity, variant } = req.body;
-    const qty = quantity || 1;
-    await prisma.itemStat.upsert({
-      where: { restaurant_id_item_key: { restaurant_id: restaurantId, item_key: itemId } },
-      update: { count: { increment: qty } },
-      create: { restaurant_id: restaurantId, item_key: itemId, count: qty }
-    });
-    if (variant && variant.variantId) {
-      const key = `${itemId}|${variant.variantId}`;
-      await prisma.itemStat.upsert({
-        where: { restaurant_id_item_key: { restaurant_id: restaurantId, item_key: key } },
-        update: { count: { increment: qty } },
-        create: { restaurant_id: restaurantId, item_key: key, count: qty }
-      });
-    }
-    res.json({ success: true });
+    const result = await statsService.recordPurchase(restaurantId, itemId, quantity, variant);
+    res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getStats = async (req, res) => {
+exports.getStats = async (req, res, next) => {
   try {
-    const rows = await prisma.itemStat.findMany({ where: { restaurant_id: req.params.id } });
+    const data = await statsService.getStats(req.params.id);
     const stats = {};
-    rows.forEach(r => { stats[r.item_key] = r.count; });
+    data.forEach(r => { stats[r.item_key] = r.count; });
     res.json(stats);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getTop = async (req, res) => {
+exports.getTop = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
-    const rows = await prisma.itemStat.findMany({
-      where: { restaurant_id: req.params.id, NOT: { item_key: { contains: '|' } } },
-      orderBy: { count: 'desc' },
-      take: limit
-    });
-    res.json(rows.map(r => ({ itemId: r.item_key, count: r.count })));
+    const data = await statsService.getTop(req.params.id, limit);
+    res.json(ItemStatDTO.forTopItems(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getItemCount = async (req, res) => {
+exports.getItemCount = async (req, res, next) => {
   try {
-    const rows = await prisma.itemStat.findMany({
-      where: {
-        restaurant_id: req.params.id,
-        OR: [
-          { item_key: req.params.itemId },
-          { item_key: { startsWith: `${req.params.itemId}|` } }
-        ]
-      }
-    });
-    const total = rows.reduce((sum, r) => sum + r.count, 0);
+    const data = await statsService.getItemCount(req.params.id, req.params.itemId);
+    const total = data.reduce((sum, r) => sum + r.count, 0);
     res.json({ count: total });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getVariants = async (req, res) => {
+exports.getVariants = async (req, res, next) => {
   try {
-    const rows = await prisma.itemStat.findMany({
-      where: { restaurant_id: req.params.id, item_key: { startsWith: `${req.params.itemId}|` } }
-    });
-    res.json(rows.map(r => ({
-      variantId: r.item_key.split('|')[1], count: r.count
-    })).sort((a, b) => b.count - a.count));
+    const data = await statsService.getVariants(req.params.id, req.params.itemId);
+    res.json(ItemStatDTO.forVariants(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };

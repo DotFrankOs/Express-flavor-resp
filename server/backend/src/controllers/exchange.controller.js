@@ -1,12 +1,11 @@
-const prisma = require('../lib/prisma');
+const { exchangeService } = require('../services');
+const { ExchangeRateDTO } = require('../dto');
 
-exports.getRates = async (req, res) => {
+exports.getRates = async (req, res, next) => {
   try {
-    const rows = await prisma.exchangeRate.findMany();
-    const rates = {}; const symbols = {};
-    rows.forEach(r => { rates[r.code] = parseFloat(r.rate); symbols[r.code] = r.symbol; });
-    res.json({ base: 'USD', rates, symbols });
+    const data = await exchangeService.getRates();
+    res.json(ExchangeRateDTO.fromRawList(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };

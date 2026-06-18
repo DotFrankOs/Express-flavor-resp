@@ -74,5 +74,5 @@ export const staffService = {
       method: 'PATCH',
       body: JSON.stringify({ status, statusNote })
     });
-  }
+  } 
 };

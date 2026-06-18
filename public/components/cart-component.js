@@ -77,9 +77,9 @@ class CartComponent extends HTMLElement {
 
     const grouped = await cartService.getGrouped();
 
-    let message = '🛒 Resumen de compra:\n\n';
+    let message = 'Resumen de compra:\n\n';
     grouped.forEach(group => {
-      message += `📍 ${group.restaurantName}\n`;
+      message += `${group.restaurantName}\n`;
       group.items.forEach(item => {
         const subtotal = item.price * item.quantity;
         let line = `   • ${item.name} x${item.quantity} = ${currencyService.formatPrice(subtotal)}`;
@@ -91,16 +91,28 @@ class CartComponent extends HTMLElement {
       message += '\n';
     });
     const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    message += `💰 Total: ${currencyService.formatPrice(total)}`;
+    message += `Total: ${currencyService.formatPrice(total)}`;
 
     if (!confirm(message + '\n\n¿Confirmar compra?')) return;
 
     try {
       for (const group of grouped) {
+        const cleanItems = group.items.map(item => ({
+          id: item.id,
+          name: item.name,
+          baseName: item.baseName || item.name,
+          price: item.price,
+          basePrice: item.basePrice || item.price,
+          quantity: item.quantity,
+          variant: item.variant || undefined,
+          options: item.options || [],
+          image: item.image || null
+        }));
+
         await statsService.recordOrder({
           restaurantId: group.restaurantId,
           restaurantName: group.restaurantName,
-          items: group.items,
+          items: cleanItems,
           total: group.items.reduce((s, i) => s + (i.price * i.quantity), 0)
         });
       }

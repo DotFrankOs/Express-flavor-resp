@@ -1,10 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { protegerRuta } = require('../middlewares/auth.middleware');
-const ctrl = require('../controllers/stats.controller');
-router.post('/stats/purchase', protegerRuta, ctrl.recordPurchase);
-router.get('/stats/restaurants/:id', ctrl.getStats);
-router.get('/stats/restaurants/:id/top', ctrl.getTop);
-router.get('/stats/restaurants/:id/items/:itemId', ctrl.getItemCount);
-router.get('/stats/restaurants/:id/items/:itemId/variants', ctrl.getVariants);
+const statsController = require('../controllers/stats.controller');
+const { statsValidator } = require('../middlewares/validators');
+
+router.post(
+  '/stats/purchase',
+  protegerRuta,
+  statsValidator.validateRecordPurchase,
+  statsController.recordPurchase
+);
+router.get('/stats/restaurants/:id', statsController.getStats);
+router.get('/stats/restaurants/:id/top', statsController.getTop);
+router.get('/stats/restaurants/:id/items/:itemId', statsController.getItemCount);
+router.get('/stats/restaurants/:id/items/:itemId/variants', statsController.getVariants);
+
 module.exports = router;

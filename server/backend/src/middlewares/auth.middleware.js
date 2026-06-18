@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+const { secret } = config.jwt;
 
 function protegerRuta(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -12,7 +13,7 @@ function protegerRuta(req, res, next) {
   const token = authHeader.substring(7);
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     req.userId = decoded.user;
     next();
@@ -26,10 +27,11 @@ function opcionalAuth(req, res, next) {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7);
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, secret);
       req.user = decoded;
       req.userId = decoded.user;
     } catch {
+      // Token inválido, continuar sin usuario
     }
   }
   next();

@@ -1,28 +1,20 @@
-const prisma = require('../lib/prisma');
+const { reportService } = require('../services');
+const { ReportDTO } = require('../dto');
 
-exports.getAll = async (req, res) => {
+exports.getAll = async (req, res, next) => {
   try {
-    const rows = await prisma.report.findMany({ orderBy: { date: 'desc' } });
-    res.json(rows.map(r => ({
-      id: r.id, description: r.description,
-      image: r.image, date: r.date, userId: r.user_id
-    })));
+    const data = await reportService.getAll();
+    res.json(ReportDTO.fromRawList(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
   try {
-    const { description, image, userId } = req.body;
-    if (userId !== req.userId) return res.status(403).json({ error: 'No autorizado' });
-    const id = BigInt(Date.now());
-    const date = new Date();
-    const report = await prisma.report.create({
-      data: { id, description, image, date, user_id: userId }
-    });
-    res.json({ id: report.id, description: report.description, image: report.image, date: report.date, userId: report.user_id });
+    const data = await reportService.create(req.body, req.userId);
+    res.json(ReportDTO.fromRaw(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };

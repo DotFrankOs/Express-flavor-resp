@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/exchange.controller');
-router.get('/exchange-rates', ctrl.getRates);
+const exchangeController = require('../controllers/exchange.controller');
+
+router.get('/exchange-rates', exchangeController.getRates);
+
 module.exports = router;

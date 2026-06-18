@@ -1,28 +1,20 @@
-const prisma = require('../lib/prisma');
+const { restaurantService } = require('../services');
+const { RestaurantDTO } = require('../dto');
 
-exports.getAll = async (req, res) => {
+exports.getAll = async (req, res, next) => {
   try {
-    const rows = await prisma.restaurant.findMany();
-    res.json(rows.map(r => ({
-      id: r.id, name: r.name, type: r.type, logo: r.logo,
-      description: r.description, url: r.url,
-      minDuration: r.min_duration, maxDuration: r.max_duration
-    })));
+    const data = await restaurantService.getAll();
+    res.json(RestaurantDTO.fromRawList(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 
-exports.getById = async (req, res) => {
+exports.getById = async (req, res, next) => {
   try {
-    const r = await prisma.restaurant.findUnique({ where: { id: req.params.id } });
-    if (!r) return res.status(404).json({ error: 'Restaurante no encontrado' });
-    res.json({
-      id: r.id, name: r.name, type: r.type, logo: r.logo,
-      description: r.description, url: r.url,
-      minDuration: r.min_duration, maxDuration: r.max_duration
-    });
+    const data = await restaurantService.getById(req.params.id);
+    res.json(RestaurantDTO.fromRaw(data));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };

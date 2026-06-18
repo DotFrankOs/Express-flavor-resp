@@ -243,14 +243,27 @@ async function processCashOrder(grouped, total) {
 async function createOrders(grouped, total, paymentMethod, deliveryCode) {
   try {
     for (const group of grouped) {
+      const cleanItems = group.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        baseName: item.baseName || item.name,
+        price: item.price,
+        basePrice: item.basePrice || item.price,
+        quantity: item.quantity,
+        variant: item.variant || undefined,
+        options: item.options || [],
+        image: item.image || null
+      }));
+
       const orderData = {
         restaurantId: group.restaurantId,
         restaurantName: group.restaurantName,
-        items: group.items,
+        items: cleanItems,
         total: group.items.reduce((s, i) => s + (i.price * i.quantity), 0),
         paymentMethod,
         deliveryCode
       };
+
       await statsService.recordOrder(orderData);
     }
 
