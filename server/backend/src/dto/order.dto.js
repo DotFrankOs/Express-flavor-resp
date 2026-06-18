@@ -25,7 +25,7 @@ class OrderDTO {
     return dataList.map(d => this.fromRaw(d));
   }
 
-  static forCreationResponse(order, items) {
+  static forCreationResponse(order, items, deliveryCode) {
     if (!order) return null;
     return {
       id: order.id,
@@ -35,7 +35,7 @@ class OrderDTO {
       items: Array.isArray(items) ? items : [],
       total: parseFloat(order.total ?? 0),
       paymentMethod: order.payment_method ?? order.paymentMethod,
-      deliveryCode: order.delivery_code ?? order.deliveryCode,
+      deliveryCode: deliveryCode || order.delivery_code || order.deliveryCode,
       status: order.status,
       statusNote: order.status_note ?? order.statusNote,
       createdAt: order.created_at ?? order.createdAt

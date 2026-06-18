@@ -15,6 +15,13 @@ class TableRepository extends BaseRepository {
   async findLayoutByRestaurantId(restaurantId) {
     return this.db.findUnique('tableLayout', { restaurant_id: restaurantId });
   }
+
+  async findTableById(restaurantId, tableId) {
+    return this.findFirst({
+      id: tableId,
+      restaurant_id: restaurantId
+    });
+  }
 }
 
 module.exports = TableRepository;

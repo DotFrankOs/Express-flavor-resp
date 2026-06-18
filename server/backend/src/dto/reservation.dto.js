@@ -8,7 +8,12 @@ class ReservationDTO {
       endTime: data.end_time ?? data.endTime,
       duration: data.duration,
       code: data.code,
-      userId: data.user_id ?? data.userId
+      userId: data.user_id ?? data.userId,
+      price: parseFloat(data.price ?? 0),
+      status: data.status || 'active',
+      cancellationReason: data.cancellation_reason ?? null,
+      cancelledAt: data.cancelled_at ?? null,
+      cancelledBy: data.cancelled_by ?? null
     };
 
     if (data.restaurant) {

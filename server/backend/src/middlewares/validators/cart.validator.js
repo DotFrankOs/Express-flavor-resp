@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const cartItemSchema = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.string().optional(),
   name: Joi.string().required(),
   baseName: Joi.string().optional().allow(''),
   price: Joi.number().positive().required(),
@@ -19,19 +19,22 @@ const saveCartSchema = Joi.object({
   updatedAt: Joi.string().isoDate().optional().allow(null)
 });
 
+const updateQuantitySchema = Joi.object({
+  quantity: Joi.number().integer().min(1).required()
+});
+
 function validate(schema) {
   return (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
     if (error) {
-      return res.status(400).json({
-        error: 'Datos inválidos',
-        details: error.details.map(d => d.message)
-      });
+      return res.status(400).json({ error: 'Datos inválidos', details: error.details.map(d => d.message) });
     }
     next();
   };
 }
 
 module.exports = {
-  validateSaveCart: validate(saveCartSchema)
+  validateSaveCart: validate(saveCartSchema),
+  validateCartItem: validate(cartItemSchema),
+  validateUpdateQuantity: validate(updateQuantitySchema)
 };

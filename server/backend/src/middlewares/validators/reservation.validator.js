@@ -5,7 +5,7 @@ const createReservationSchema = Joi.object({
   startTime: Joi.date().iso().required(),
   endTime: Joi.date().iso().greater(Joi.ref('startTime')).required(),
   duration: Joi.number().integer().positive().optional(),
-  code: Joi.string().optional().allow(''),
+  code: Joi.string().optional().allow(''), // Backend lo genera
   userId: Joi.string().required()
 });
 
@@ -19,6 +19,12 @@ const replaceAllSchema = Joi.array().items(
     userId: Joi.string().required()
   })
 );
+
+const cancelReservationSchema = Joi.object({
+  tableNumber: Joi.number().integer().positive().required(),
+  startTime: Joi.date().iso().required(),
+  reason: Joi.string().min(3).max(500).required()
+});
 
 const removeReservationSchema = Joi.object({
   tableNumber: Joi.number().integer().positive().required(),
@@ -41,5 +47,6 @@ function validate(schema) {
 module.exports = {
   validateCreate: validate(createReservationSchema),
   validateReplaceAll: validate(replaceAllSchema),
+  validateCancel: validate(cancelReservationSchema),
   validateRemove: validate(removeReservationSchema)
 };

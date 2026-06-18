@@ -1,8 +1,10 @@
 const Joi = require('joi');
 
 const orderItemOptionSchema = Joi.object({
+  optionId: Joi.string().required(),
+  optionName: Joi.string().optional(),
   choiceId: Joi.string().required(),
-  choiceName: Joi.string().required(),
+  choiceName: Joi.string().optional(),
   priceModifier: Joi.number().min(0).default(0)
 });
 
@@ -13,8 +15,12 @@ const orderItemSchema = Joi.object({
   price: Joi.number().positive().required(),
   basePrice: Joi.number().positive().optional(),
   quantity: Joi.number().integer().min(1).required(),
-  variant: Joi.object().optional().allow(null),
-  options: Joi.array().optional().default([]),
+  variant: Joi.object({
+    variantId: Joi.string().required(),
+    variantName: Joi.string().optional(),
+    price: Joi.number().positive().optional()
+  }).optional().allow(null),
+  options: Joi.array().items(orderItemOptionSchema).optional().default([]),
   image: Joi.string().optional().allow('', null),
   restaurantId: Joi.string().optional(),
   restaurantName: Joi.string().optional()
@@ -26,13 +32,18 @@ const createOrderSchema = Joi.object({
   restaurantId: Joi.string().required(),
   restaurantName: Joi.string().required(),
   userId: Joi.string().required(),
-  paymentMethod: Joi.string().valid('card', 'cash').default('card'),
-  deliveryCode: Joi.string().optional().allow('')
+  paymentMethod: Joi.string().valid('card', 'cash').default('card')
+  // deliveryCode NO viene del frontend - lo genera el backend
 });
 
 const updateStatusSchema = Joi.object({
-  status: Joi.string().valid('pending', 'processing', 'delivering', 'delivered', 'issue').required(),
-  statusNote: Joi.string().optional().allow('')
+  status: Joi.string().valid('pending', 'processing', 'delivering', 'delivered', 'issue', 'cancelled').required(),
+  statusNote: Joi.string().optional().allow('', null)
+    .when('status', {
+      is: 'cancelled',
+      then: Joi.string().min(3).required(),
+      otherwise: Joi.string().optional().allow('', null)
+    })
 });
 
 function validate(schema) {

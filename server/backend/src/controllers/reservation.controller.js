@@ -13,7 +13,7 @@ exports.getAll = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     const data = await reservationService.create(req.params.id, req.body, req.userId);
-    res.json(ReservationDTO.fromRaw(data));
+    res.status(201).json(ReservationDTO.fromRaw(data));
   } catch (err) {
     next(err);
   }
@@ -23,6 +23,23 @@ exports.replaceAll = async (req, res, next) => {
   try {
     await reservationService.replaceAll(req.params.id, req.body);
     res.json(req.body);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// NUEVO: Cancelar con motivo
+exports.cancel = async (req, res, next) => {
+  try {
+    const { tableNumber, startTime, reason } = req.body;
+    const result = await reservationService.cancel(
+      req.params.id,
+      tableNumber,
+      startTime,
+      req.userId,
+      reason
+    );
+    res.json(ReservationDTO.fromRaw(result));
   } catch (err) {
     next(err);
   }

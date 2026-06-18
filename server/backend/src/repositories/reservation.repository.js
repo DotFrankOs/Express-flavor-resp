@@ -6,7 +6,10 @@ class ReservationRepository extends BaseRepository {
   }
 
   async findByRestaurantId(restaurantId) {
-    return this.findMany({ restaurant_id: restaurantId });
+    return this.findMany(
+      { restaurant_id: restaurantId },
+      { orderBy: { start_time: 'asc' } }
+    );
   }
 
   async findByUserId(userId) {
@@ -27,6 +30,21 @@ class ReservationRepository extends BaseRepository {
     });
   }
 
+  /**
+   * Busca reservas que se solapan con el rango dado
+   */
+  async findOverlapping(restaurantId, tableNumber, startTime, endTime, statuses = ['active']) {
+    return this.findMany({
+      restaurant_id: restaurantId,
+      table_number: tableNumber,
+      status: { in: statuses },
+      AND: [
+        { start_time: { lt: endTime } },
+        { end_time: { gt: startTime } }
+      ]
+    });
+  }
+
   async deleteByTableAndTime(restaurantId, tableNumber, startTime) {
     return this.deleteMany({
       restaurant_id: restaurantId,
@@ -38,7 +56,7 @@ class ReservationRepository extends BaseRepository {
   async replaceAllForRestaurant(restaurantId, reservations) {
     return this.transaction(async (tx) => {
       await tx.reservation.deleteMany({ where: { restaurant_id: restaurantId } });
-      
+
       for (const r of reservations) {
         await tx.reservation.create({
           data: {
@@ -48,7 +66,9 @@ class ReservationRepository extends BaseRepository {
             end_time: new Date(r.endTime),
             duration: r.duration,
             code: r.code,
-            user_id: r.userId
+            user_id: r.userId,
+            price: r.price || 0,
+            status: r.status || 'active'
           }
         });
       }
