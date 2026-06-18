@@ -1,5 +1,3 @@
-const RestaurantDTO = require('./restaurant.dto');
-
 class UserRestaurantDTO {
   static forDashboard(data) {
     if (!data) return null;

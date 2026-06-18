@@ -1,9 +1,8 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class TableRepository extends BaseRepository {
-  constructor() {
-    super(prisma.table);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'table');
   }
 
   async findByRestaurantId(restaurantId) {
@@ -14,10 +13,8 @@ class TableRepository extends BaseRepository {
   }
 
   async findLayoutByRestaurantId(restaurantId) {
-    return prisma.tableLayout.findUnique({
-      where: { restaurant_id: restaurantId }
-    });
+    return this.db.findUnique('tableLayout', { restaurant_id: restaurantId });
   }
 }
 
-module.exports = new TableRepository();
+module.exports = TableRepository;

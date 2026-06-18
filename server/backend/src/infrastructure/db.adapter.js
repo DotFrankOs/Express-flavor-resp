@@ -3,16 +3,16 @@ class DbAdapter {
     this.client = prismaClient;
   }
 
-  async findMany(model, where, options = {}) {
+  async findMany(model, where = {}, options = {}) {
     return this.client[model].findMany({ where, ...options });
   }
 
-  async findUnique(model, where) {
-    return this.client[model].findUnique({ where });
+  async findUnique(model, where, options = {}) {
+    return this.client[model].findUnique({ where, ...options });
   }
 
-  async findFirst(model, where) {
-    return this.client[model].findFirst({ where });
+  async findFirst(model, where, options = {}) {
+    return this.client[model].findFirst({ where, ...options });
   }
 
   async create(model, data) {
@@ -31,7 +31,7 @@ class DbAdapter {
     return this.client[model].deleteMany({ where });
   }
 
-  async count(model, where) {
+  async count(model, where = {}) {
     return this.client[model].count({ where });
   }
 
@@ -43,8 +43,8 @@ class DbAdapter {
     return this.client.$transaction(callback);
   }
 
-  async queryRaw(query, params) {
-    return this.client.$queryRaw(query, params);
+  async queryRaw(query, ...params) {
+    return this.client.$queryRaw(query, ...params);
   }
 }
 

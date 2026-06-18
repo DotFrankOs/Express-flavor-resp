@@ -1,5 +1,5 @@
 const { reservationRepository } = require('../repositories');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class ReservationService {
   constructor(repo) {
@@ -12,14 +12,14 @@ class ReservationService {
 
   async create(restaurantId, data, userId) {
     if (data.userId !== userId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     return this.repo.create({
       restaurant_id: restaurantId,
       table_number: data.number,
-      start_time: new Date(data.startTime),
-      end_time: new Date(data.endTime),
+      start_time: data.startTime,
+      end_time: data.endTime,
       duration: data.duration,
       code: data.code,
       user_id: userId
@@ -33,10 +33,10 @@ class ReservationService {
   async remove(restaurantId, tableNumber, startTime, userId) {
     const check = await this.repo.findByTableAndTime(restaurantId, tableNumber, startTime);
     if (!check) {
-      throw new AppError('Reserva no encontrada', 404);
+      throw new ApplicationError('Reserva no encontrada', 404);
     }
     if (check.user_id !== userId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     await this.repo.deleteByTableAndTime(restaurantId, tableNumber, startTime);

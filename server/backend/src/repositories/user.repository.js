@@ -1,9 +1,8 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class UserRepository extends BaseRepository {
-  constructor() {
-    super(prisma.user);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'user');
   }
 
   async findByUsername(username) {
@@ -18,4 +17,4 @@ class UserRepository extends BaseRepository {
   }
 }
 
-module.exports = new UserRepository();
+module.exports = UserRepository;

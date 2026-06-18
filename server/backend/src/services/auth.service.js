@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { userRepository } = require('../repositories');
 const { UserDTO } = require('../dto');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 const { secret, expiresIn } = config.jwt;
 
@@ -15,7 +15,7 @@ class AuthService {
     const user = await this.repo.findByUsername(username);
 
     if (!user || user.pass !== password) {
-      throw new AppError('Credenciales inválidas', 401);
+      throw new ApplicationError('Credenciales inválidas', 401);
     }
 
     const token = jwt.sign(
@@ -32,7 +32,7 @@ class AuthService {
 
     const exists = await this.repo.findUnique({ user });
     if (exists) {
-      throw new AppError('Usuario ya existe', 409);
+      throw new ApplicationError('Usuario ya existe', 409);
     }
 
     const newUser = await this.repo.create({

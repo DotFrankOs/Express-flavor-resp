@@ -1,9 +1,8 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class OrderRepository extends BaseRepository {
-  constructor() {
-    super(prisma.order);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'order');
   }
 
   async findByUserId(userId) {
@@ -53,7 +52,7 @@ class OrderRepository extends BaseRepository {
             price: item.price,
             base_price: item.basePrice || item.price,
             quantity: item.quantity,
-            variant: item.variant ? JSON.stringify(item.variant) : null,
+            variant: this._stringifyJson(item.variant),
             image: item.image || null
           }
         });
@@ -77,4 +76,4 @@ class OrderRepository extends BaseRepository {
   }
 }
 
-module.exports = new OrderRepository();
+module.exports = OrderRepository;

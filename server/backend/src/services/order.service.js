@@ -1,6 +1,6 @@
 const { orderRepository, userRepository, statsRepository } = require('../repositories');
 const { generateOrderId } = require('../utils/id-generator.utils');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class OrderService {
   constructor(orderRepo, userRepo, statsRepo) {
@@ -13,7 +13,7 @@ class OrderService {
     const { items, total, restaurantId, restaurantName, userId, paymentMethod, deliveryCode } = data;
 
     if (userId !== authenticatedUserId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     const orderId = generateOrderId();
@@ -54,7 +54,7 @@ class OrderService {
 
   async getByUser(userId, authenticatedUserId) {
     if (userId !== authenticatedUserId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
     return this.orderRepo.findByUserId(userId);
   }
@@ -62,7 +62,7 @@ class OrderService {
   async updateStatus(orderId, status, statusNote) {
     const validStatuses = ['pending', 'processing', 'delivering', 'delivered', 'issue'];
     if (!validStatuses.includes(status)) {
-      throw new AppError('Estado no válido', 400);
+      throw new ApplicationError('Estado no válido', 400);
     }
 
     return this.orderRepo.update(

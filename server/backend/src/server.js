@@ -7,7 +7,7 @@ require('dotenv').config();
 const config = require('./config');
 const logger = require('./config/logger');
 const routes = require('./routes');
-const errorMiddleware = require('./middlewares/error.middleware');
+const { errorMiddleware } = require('./infrastructure/composition');
 
 const app = express();
 

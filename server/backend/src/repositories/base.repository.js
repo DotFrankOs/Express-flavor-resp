@@ -8,12 +8,12 @@ class BaseRepository {
     return this.db.findMany(this.model, where, options);
   }
 
-  async findUnique(where) {
-    return this.db.findUnique(this.model, where);
+  async findUnique(where, options = {}) {
+    return this.db.findUnique(this.model, where, options);
   }
 
-  async findFirst(where) {
-    return this.db.findFirst(this.model, where);
+  async findFirst(where, options = {}) {
+    return this.db.findFirst(this.model, where, options);
   }
 
   async create(data) {
@@ -42,6 +42,20 @@ class BaseRepository {
 
   async transaction(callback) {
     return this.db.transaction(callback);
+  }
+
+  _parseJson(val) {
+    if (!val) return null;
+    if (typeof val === 'string') {
+      try { return JSON.parse(val); } catch { return val; }
+    }
+    return val;
+  }
+
+  _stringifyJson(val) {
+    if (!val) return null;
+    if (typeof val === 'string') return val;
+    return JSON.stringify(val);
   }
 }
 

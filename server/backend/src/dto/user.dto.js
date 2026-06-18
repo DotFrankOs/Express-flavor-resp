@@ -8,10 +8,8 @@ class UserDTO {
       phone: data.phone,
       avatar: data.avatar,
       role: data.role,
-      ordersCount: data.orders_count ?? data.ordersCount ?? 0,
-      favorites: typeof data.favorites === 'string'
-        ? JSON.parse(data.favorites || '[]')
-        : (data.favorites || [])
+      ordersCount: data.orders_count ?? 0,
+      favorites: data.favorites ?? []
     };
   }
 

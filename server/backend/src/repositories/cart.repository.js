@@ -1,13 +1,17 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class CartRepository extends BaseRepository {
-  constructor() {
-    super(prisma.cartItem);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'cartItem');
   }
 
   async findByUserId(userId) {
-    return this.findMany({ user_id: userId });
+    const rows = await this.findMany({ user_id: userId });
+    return rows.map(row => ({
+      ...row,
+      variant: this._parseJson(row.variant),
+      options: this._parseJson(row.options)
+    }));
   }
 
   async replaceAllForUser(userId, items) {
@@ -26,8 +30,8 @@ class CartRepository extends BaseRepository {
             restaurant_id: item.restaurantId,
             restaurant_name: item.restaurantName,
             quantity: item.quantity,
-            variant: item.variant ? JSON.stringify(item.variant) : null,
-            options: item.options ? JSON.stringify(item.options) : null,
+            variant: this._stringifyJson(item.variant),
+            options: this._stringifyJson(item.options),
             image: item.image || null
           }
         });
@@ -36,4 +40,4 @@ class CartRepository extends BaseRepository {
   }
 }
 
-module.exports = new CartRepository();
+module.exports = CartRepository;

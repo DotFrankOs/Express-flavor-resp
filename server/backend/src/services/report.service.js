@@ -1,6 +1,6 @@
 const { reportRepository } = require('../repositories');
 const { generateReportId } = require('../utils/id-generator.utils');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class ReportService {
   constructor(repo) {
@@ -15,7 +15,7 @@ class ReportService {
     const { description, image, userId } = data;
 
     if (userId !== authenticatedUserId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     const id = generateReportId();

@@ -1,9 +1,8 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class StatsRepository extends BaseRepository {
-  constructor() {
-    super(prisma.itemStat);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'itemStat');
   }
 
   async findByRestaurantId(restaurantId) {
@@ -49,4 +48,4 @@ class StatsRepository extends BaseRepository {
   }
 }
 
-module.exports = new StatsRepository();
+module.exports = StatsRepository;

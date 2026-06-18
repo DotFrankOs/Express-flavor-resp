@@ -1,5 +1,5 @@
 const { cartRepository } = require('../repositories');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class CartService {
   constructor(repo) {
@@ -12,7 +12,7 @@ class CartService {
 
   async saveCart(userId, items, authenticatedUserId) {
     if (userId !== authenticatedUserId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     await this.repo.replaceAllForUser(userId, items);
@@ -21,7 +21,7 @@ class CartService {
 
   async clearCart(userId, authenticatedUserId) {
     if (userId !== authenticatedUserId) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     await this.repo.deleteMany({ user_id: userId });

@@ -1,6 +1,6 @@
 const { staffRepository, orderRepository, statsRepository } = require('../repositories');
 const { getTodayRange } = require('../utils/date.utils');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class StaffService {
   constructor(staffRepo, orderRepo, statsRepo) {
@@ -16,7 +16,7 @@ class StaffService {
   async getDashboard(userId, restaurantId) {
     const access = await this.staffRepo.findUserRestaurant(userId, restaurantId);
     if (!access) {
-      throw new AppError('No tienes acceso a este restaurante', 403);
+      throw new ApplicationError('No tienes acceso a este restaurante', 403);
     }
 
     const { today, tomorrow } = getTodayRange();
@@ -44,17 +44,17 @@ class StaffService {
   async updateOrderStatus(userId, orderId, status, statusNote) {
     const validStatuses = ['pending', 'processing', 'delivering', 'delivered', 'issue'];
     if (!validStatuses.includes(status)) {
-      throw new AppError('Estado no válido', 400);
+      throw new ApplicationError('Estado no válido', 400);
     }
 
     const order = await this.orderRepo.findUnique({ id: orderId });
     if (!order) {
-      throw new AppError('Orden no encontrada', 404);
+      throw new ApplicationError('Orden no encontrada', 404);
     }
 
     const access = await this.staffRepo.findUserRestaurant(userId, order.restaurant_id);
     if (!access) {
-      throw new AppError('No autorizado', 403);
+      throw new ApplicationError('No autorizado', 403);
     }
 
     return this.orderRepo.update(

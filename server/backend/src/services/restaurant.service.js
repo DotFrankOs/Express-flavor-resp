@@ -1,5 +1,5 @@
 const { restaurantRepository } = require('../repositories');
-const { AppError } = require('../utils/prisma-error-handler.utils');
+const ApplicationError = require('../domain/errors/application-error');
 
 class RestaurantService {
   constructor(repo) {
@@ -13,7 +13,7 @@ class RestaurantService {
   async getById(id) {
     const restaurant = await this.repo.findUnique({ id });
     if (!restaurant) {
-      throw new AppError('Restaurante no encontrado', 404);
+      throw new ApplicationError('Restaurante no encontrado', 404);
     }
     return restaurant;
   }

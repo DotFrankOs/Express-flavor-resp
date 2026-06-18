@@ -1,9 +1,8 @@
-const prisma = require('../lib/prisma');
 const BaseRepository = require('./base.repository');
 
 class ReportRepository extends BaseRepository {
-  constructor() {
-    super(prisma.report);
+  constructor(dbAdapter) {
+    super(dbAdapter, 'report');
   }
 
   async findAllOrdered() {
@@ -11,4 +10,4 @@ class ReportRepository extends BaseRepository {
   }
 }
 
-module.exports = new ReportRepository();
+module.exports = ReportRepository;
