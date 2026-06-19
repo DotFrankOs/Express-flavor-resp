@@ -31,7 +31,7 @@ function _load() {
 function _save(cart) {
   cart.updatedAt = new Date().toISOString();
   localStorage.setItem(_key(), JSON.stringify(cart));
-  _notify(); // ← NUEVO
+  _notify();
 }
 
 function _notify() {
