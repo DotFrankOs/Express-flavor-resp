@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protegerRuta } = require('../middlewares/auth.middleware');
+const { requireOwnership } = require('../middlewares/ownership.middleware'); // <-- FALTABA ESTO
 const orderController = require('../controllers/order.controller');
 const { orderValidator } = require('../middlewares/validators');
 
@@ -10,7 +11,7 @@ router.post(
   orderValidator.validateCreateOrder,
   orderController.create
 );
-router.get('/orders/user/:userId', protegerRuta, orderController.getByUser);
+router.get('/orders/user/:userId', protegerRuta, requireOwnership('userId'), orderController.getByUser);
 router.patch(
   '/orders/:id/status',
   protegerRuta,

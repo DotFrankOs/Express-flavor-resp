@@ -40,17 +40,41 @@ function _notify() {
 
 export const cartService = {
   async getCart() {
+    let cart;
     if (apiConfig.useMock) {
-      return _load();
+        cart = _load();
+    } else {
+        cart = await apiFetch(`/cart/${_getUser()}`);
     }
-    return apiFetch(`/cart/${_getUser()}`);
-  },
+    
+    return cart || { items: [], updatedAt: null };
+},
 
   async saveCart(cart) {
+    if (cart.items) {
+        cart.items = cart.items.map((item, idx) => {
+            const normalized = {
+                id: item.id,
+                name: item.name,
+                baseName: item.baseName || item.base_name || item.name,
+                price: Number(item.price),
+                basePrice: item.basePrice || item.base_price || Number(item.price),
+                restaurantId: item.restaurantId || item.restaurant_id,
+                restaurantName: item.restaurantName || item.restaurant_name,
+                quantity: item.quantity || 1,
+                variant: item.variant || null,
+                options: item.options || [],
+                image: item.image || null
+            };
+            return normalized;
+        });
+    }
+    
     cart.updatedAt = new Date().toISOString();
+    
     if (apiConfig.useMock) {
-      _save(cart);
-      return cart;
+        _save(cart);
+        return cart;
     }
     const result = await apiFetch(`/cart/${_getUser()}`, {
       method: 'PUT',
@@ -74,28 +98,8 @@ export const cartService = {
     const cart = await this.getCart();
     if (!cart.items) cart.items = [];
 
-    const optionsSig = (item.options || [])
-      .map(o => o.choiceId)
-      .sort()
-      .join('|');
-    const variantSig = item.variant ? item.variant.variantId : '';
-    const signature = `${item.id || item.name}_${variantSig}_${optionsSig}`;
-
-    const existing = cart.items.find(i => {
-      const iOptionsSig = (i.options || [])
-        .map(o => o.choiceId)
-        .sort()
-        .join('|');
-      const iVariantSig = i.variant ? i.variant.variantId : '';
-      const iSignature = `${i.id || i.name}_${iVariantSig}_${iOptionsSig}`;
-      return iSignature === signature && i.restaurantId === item.restaurantId;
-    });
-
-    if (existing) {
-      existing.quantity += item.quantity || 1;
-    } else {
-      cart.items.push({
-      id: item.id || `${item.restaurantId}_${item.name}_${Date.now()}`,
+    const normalizedItem = {
+      id: item.id,
       name: item.name,
       baseName: item.baseName || item.name,
       price: Number(item.price),
@@ -106,8 +110,37 @@ export const cartService = {
       variant: item.variant || null,
       options: item.options || [],
       image: item.image || null
-    });
+    };
+
+    if (!normalizedItem.restaurantId || !normalizedItem.restaurantName) {
+      throw new Error('El item debe tener restaurantId y restaurantName');
     }
+
+    const optionsSig = (normalizedItem.options || [])
+      .map(o => o.choiceId)
+      .sort()
+      .join('|');
+    const variantSig = normalizedItem.variant ? normalizedItem.variant.variantId : '';
+    const signature = `${normalizedItem.id || normalizedItem.name}_${variantSig}_${optionsSig}`;
+
+    const existing = cart.items.find(i => {
+      const iOptionsSig = (i.options || [])
+        .map(o => o.choiceId)
+        .sort()
+        .join('|');
+      const iVariantSig = i.variant ? i.variant.variantId : '';
+      const iSignature = `${i.id || i.name}_${iVariantSig}_${iOptionsSig}`;
+      return iSignature === signature && i.restaurantId === normalizedItem.restaurantId;
+    });
+
+    if (existing) {
+        existing.quantity += normalizedItem.quantity || 1;
+        existing.restaurantId = existing.restaurantId || normalizedItem.restaurantId;
+        existing.restaurantName = existing.restaurantName || normalizedItem.restaurantName;
+    } else {
+      cart.items.push(normalizedItem);
+    }
+
     return this.saveCart(cart);
   },
 

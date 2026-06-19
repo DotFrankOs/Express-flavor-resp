@@ -93,6 +93,7 @@ class MenuItemComponent extends HTMLElement {
 
   async _addToCartDirect() {
     const item = this._item;
+
     const cartItem = {
       id: item.id,
       name: item.name,
@@ -108,9 +109,7 @@ class MenuItemComponent extends HTMLElement {
     };
     
     await cartService.addItem(cartItem);
-    
     this._dispatchAdd(cartItem);
-    
     this._flashButton(this.querySelector('.add-btn'));
   }
 
@@ -350,10 +349,16 @@ class MenuItemComponent extends HTMLElement {
     if (selectedVariant) displayName += ` (${selectedVariant.variantName})`;
 
     const cartItem = {
-      id: item.id, name: displayName, baseName: item.name,
-      price: finalPrice, basePrice: item.price,
-      restaurantId: this._restaurantId, restaurantName: this._restaurantName,
-      quantity: 1, variant: selectedVariant, options: selectedOptions,
+      id: item.id,
+      name: displayName,
+      baseName: item.name,
+      price: finalPrice,
+      basePrice: item.price,
+      restaurantId: this._restaurantId,
+      restaurantName: this._restaurantName,
+      quantity: 1,
+      variant: selectedVariant,
+      options: selectedOptions,
       image: item.image || null
     };
 

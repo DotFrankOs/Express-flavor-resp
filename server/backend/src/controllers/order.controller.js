@@ -3,6 +3,9 @@ const { OrderDTO } = require('../dto');
 
 exports.create = async (req, res, next) => {
   try {
+    if (req.body.userId !== req.userId && req.userRole !== 'admin') {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
     const { order, items, now, deliveryCode } = await orderService.create(req.body, req.userId);
     res.status(201).json(OrderDTO.forCreationResponse(order, items, deliveryCode));
   } catch (err) {

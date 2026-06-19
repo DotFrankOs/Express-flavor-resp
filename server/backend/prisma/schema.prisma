@@ -55,6 +55,7 @@ model MenuItem {
   price         Decimal @db.Decimal(10, 2)
   image         String? @db.VarChar(200)
   description   String?
+  is_active     Boolean @default(true)
 
   restaurant  Restaurant      @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
   options     MenuItemOption[]
@@ -137,19 +138,21 @@ model TableLayout {
 }
 
 model Reservation {
-  id                   Int       @id @default(autoincrement())
-  restaurant_id        String    @db.VarChar(50)
-  table_number         Int
-  start_time           DateTime  @db.Timestamp()
-  end_time             DateTime  @db.Timestamp()
-  duration             Int?
-  code                 String?   @db.VarChar(20)
-  user_id              String?   @db.VarChar(50)
-  price                Decimal   @default(0) @db.Decimal(10, 2)
-  status               String    @default("active") @db.VarChar(20)
-  cancellation_reason  String?
-  cancelled_at         DateTime? @db.Timestamp()
-  cancelled_by         String?   @db.VarChar(50)
+  id                  Int       @id @default(autoincrement())
+  restaurant_id       String    @db.VarChar(50)
+  table_number        Int
+  start_time          DateTime  @db.Timestamp()
+  end_time            DateTime  @db.Timestamp()
+  duration            Int?
+  code                String?   @db.VarChar(20)
+  user_id             String?   @db.VarChar(50)
+  price               Decimal   @default(0) @db.Decimal(10, 2)
+  status              String    @default("active") @db.VarChar(20)
+  cancellation_reason String?
+  cancelled_at        DateTime? @db.Timestamp()
+  cancelled_by        String?   @db.VarChar(50)
+  created_at          DateTime  @default(now()) @db.Timestamp()
+  updated_at          DateTime  @default(now()) @db.Timestamp()
 
   restaurant Restaurant @relation(fields: [restaurant_id], references: [id], onDelete: Cascade)
   user       User?      @relation(fields: [user_id], references: [user])

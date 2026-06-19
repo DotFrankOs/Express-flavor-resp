@@ -3,6 +3,7 @@ const router = express.Router();
 const { protegerRuta } = require('../middlewares/auth.middleware');
 const reservationController = require('../controllers/reservation.controller');
 const { reservationValidator } = require('../middlewares/validators');
+const { requireRestaurantAccess } = require('../middlewares/ownership.middleware');
 
 router.get('/restaurants/:id/reservations', reservationController.getAll);
 
@@ -16,6 +17,7 @@ router.post(
 router.put(
   '/restaurants/:id/reservations',
   protegerRuta,
+  requireRestaurantAccess(),
   reservationValidator.validateReplaceAll,
   reservationController.replaceAll
 );

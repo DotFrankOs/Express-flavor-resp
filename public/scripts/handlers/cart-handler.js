@@ -260,8 +260,7 @@ async function createOrders(grouped, total, paymentMethod, deliveryCode) {
         restaurantName: group.restaurantName,
         items: cleanItems,
         total: group.items.reduce((s, i) => s + (i.price * i.quantity), 0),
-        paymentMethod,
-        deliveryCode
+        paymentMethod
       };
 
       await statsService.recordOrder(orderData);

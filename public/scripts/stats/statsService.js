@@ -154,8 +154,7 @@ export const statsService = {
       body: JSON.stringify({ 
         ...orderData, 
         userId,
-        paymentMethod: paymentMethod || 'card',
-        deliveryCode: deliveryCode || null
+        paymentMethod: paymentMethod || 'card'
       })
     });
 

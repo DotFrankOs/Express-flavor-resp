@@ -115,7 +115,16 @@ export const reservationService = {
       return { success: false, message: 'La mesa ya está reservada en ese horario' };
     }
 
-    const reservation = {
+    const cleanReservations = reservations.map(r => ({
+      number: r.number,
+      startTime: r.startTime,
+      endTime: r.endTime,
+      duration: r.duration,
+      code: r.code,
+      userId: r.userId
+    }));
+
+    const newReservation = {
       number: tableNumber,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
@@ -124,12 +133,11 @@ export const reservationService = {
       userId: _getUser()
     };
 
-    reservations.push(reservation);
-    await this.saveAll(restaurantId, reservations);
+    cleanReservations.push(newReservation);
+    await this.saveAll(restaurantId, cleanReservations);
 
-    return { success: true, reservation };
+    return { success: true, reservation: newReservation };
   },
-
   async cancel(restaurantId, tableNumber, startTime) {
     const reservations = await this.getAll(restaurantId);
     const idx = reservations.findIndex(
@@ -139,7 +147,17 @@ export const reservationService = {
       return { success: false, message: 'Reserva no encontrada' };
     }
     reservations.splice(idx, 1);
-    await this.saveAll(restaurantId, reservations);
+    
+    const cleanReservations = reservations.map(r => ({
+      number: r.number,
+      startTime: r.startTime,
+      endTime: r.endTime,
+      duration: r.duration,
+      code: r.code,
+      userId: r.userId
+    }));
+    
+    await this.saveAll(restaurantId, cleanReservations);
     return { success: true };
   },
 

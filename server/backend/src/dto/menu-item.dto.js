@@ -7,7 +7,8 @@ class MenuItemDTO {
       name: data.name,
       price: parseFloat(data.price ?? 0),
       image: data.image,
-      description: data.description
+      description: data.description,
+      isActive: data.is_active ?? true
     };
 
     const options = data.options ?? data.menu_item_options;

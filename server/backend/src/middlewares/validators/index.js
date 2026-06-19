@@ -1,4 +1,5 @@
 module.exports = {
+  menuValidator: require('./menu.validator'),
   authValidator: require('./auth.validator'),
   orderValidator: require('./order.validator'),
   reservationValidator: require('./reservation.validator'),

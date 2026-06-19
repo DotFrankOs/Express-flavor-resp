@@ -3,6 +3,9 @@ const { CartItemDTO } = require('../dto');
 
 exports.getCart = async (req, res, next) => {
   try {
+    if (req.params.userId !== req.userId && req.userRole !== 'admin') {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
     const data = await cartService.getCart(req.params.userId);
     res.json({ items: CartItemDTO.fromRawList(data), updatedAt: data.length > 0 ? new Date().toISOString() : null });
   } catch (err) { next(err); }

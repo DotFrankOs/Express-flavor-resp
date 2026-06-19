@@ -23,7 +23,6 @@ const STATE_MACHINE = {
     delivered: ['issue'],
     issue: ['pending', 'processing', 'delivering']
   },
-  // Admin: cualquier transición
   admin: {
     pending: ['processing', 'delivering', 'delivered', 'issue'],
     processing: ['pending', 'delivering', 'delivered', 'issue'],
@@ -188,6 +187,10 @@ class OrderService {
 
       const sentPrice = parseFloat(item.price || 0);
       if (Math.abs(sentPrice - finalPrice) > 0.05) {
+        throw new ApplicationError(
+          `Precio manipulado para ${item.name}: enviado ${sentPrice}, calculado ${finalPrice.toFixed(2)}`,
+          400
+        );
       }
 
       validated.push({
