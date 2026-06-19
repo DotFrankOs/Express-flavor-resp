@@ -216,4 +216,5 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
   }
+  document.dispatchEvent(new CustomEvent('order-completed'));
 });

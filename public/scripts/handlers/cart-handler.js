@@ -141,6 +141,7 @@ async function renderCart() {
   
   attachItemEvents();
 }
+document.dispatchEvent(new CustomEvent('cart-updated'));
 
 function updateSummary(total) {
   document.getElementById('summary-subtotal').textContent = currencyService.formatPrice(total);

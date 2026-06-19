@@ -244,6 +244,52 @@ function closeStatusModal() {
   selectedStatus = null;
 }
 
+async function renderMenuItems(restaurantId) {
+  const container = document.getElementById('menu-items-list');
+  container.innerHTML = '<div class="staff-loading"><div class="spinner"></div><p>Cargando menú...</p></div>';
+  
+  try {
+    const items = await menuService.getMenu(restaurantId);
+    if (items.length === 0) {
+      container.innerHTML = '<p class="staff-empty">No hay items en el menú</p>';
+      return;
+    }
+    
+    container.innerHTML = items.map(item => `
+      <div class="staff-menu-item-card" data-item-id="${item.id}">
+        <div class="menu-item-main">
+          ${item.image ? `<img src="${item.image}" alt="" class="menu-item-img">` : ''}
+          <div class="menu-item-info">
+            <div class="menu-item-name">${item.name}</div>
+            <div class="menu-item-price">${currencyService.formatPrice(item.price)}</div>
+            <div class="menu-item-status ${item.isActive ? 'active' : 'inactive'}">
+              ${item.isActive ? 'Activo' : 'Inactivo'}
+            </div>
+          </div>
+        </div>
+        <div class="menu-item-actions">
+          <button class="btn-status btn-status-change" data-action="toggle" data-item="${item.id}">
+            ${item.isActive ? 'Desactivar' : 'Activar'}
+          </button>
+          <button class="btn-status btn-status-change" data-action="edit" data-item="${item.id}">
+            Editar
+          </button>
+          <button class="btn-status btn-status-change" data-action="delete" data-item="${item.id}" style="color:#ef4444;">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    `).join('');
+    
+    container.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => handleMenuAction(btn.dataset.action, btn.dataset.item, items));
+    });
+    
+  } catch (err) {
+    container.innerHTML = '<p class="error">Error cargando el menú</p>';
+  }
+}
+
 async function saveStatusChange() {
   if (!selectedOrderId || !selectedStatus) return;
   
@@ -292,8 +338,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.querySelectorAll('.staff-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.staff-tab-content').forEach(c => c.classList.remove('active'));
       
+      
       tab.classList.add('active');
       document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+
+      if (tab.dataset.tab === 'menu') {
+        renderMenuItems(currentDashboard.restaurantId);
+      }
     });
   });
 
@@ -326,4 +377,80 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeStatusModal();
   });
+});
+
+let editingItemId = null;
+
+function openMenuModal(mode = 'create', item = null) {
+  const modal = document.getElementById('menu-item-modal');
+  const title = document.getElementById('menu-modal-title');
+  
+  editingItemId = null;
+  
+  if (mode === 'edit' && item) {
+    title.textContent = 'Editar Item';
+    document.getElementById('menu-item-id').value = item.id;
+    document.getElementById('menu-item-id').disabled = true;
+    document.getElementById('menu-item-name').value = item.name;
+    document.getElementById('menu-item-price').value = item.price;
+    document.getElementById('menu-item-image').value = item.image || '';
+    document.getElementById('menu-item-desc').value = item.description || '';
+    editingItemId = item.id;
+  } else {
+    title.textContent = 'Agregar Item';
+    document.getElementById('menu-item-id').value = '';
+    document.getElementById('menu-item-id').disabled = false;
+    document.getElementById('menu-item-name').value = '';
+    document.getElementById('menu-item-price').value = '';
+    document.getElementById('menu-item-image').value = '';
+    document.getElementById('menu-item-desc').value = '';
+  }
+  
+  modal.style.display = 'flex';
+}
+
+async function handleMenuAction(action, itemId, items) {
+  const restaurantId = getRestaurantIdFromUrl();
+  
+  if (action === 'toggle') {
+    await menuService.toggleItem(restaurantId, itemId);
+    renderMenuItems(restaurantId);
+  }
+  
+  if (action === 'delete') {
+    const confirmed = await alertService.confirm('¿Eliminar este item permanentemente?');
+    if (confirmed) {
+      await menuService.deleteItem(restaurantId, itemId);
+      renderMenuItems(restaurantId);
+    }
+  }
+  
+  if (action === 'edit') {
+    const item = items.find(i => i.id === itemId);
+    openMenuModal('edit', item);
+  }
+}
+
+// Guardar item (crear o editar)
+document.getElementById('confirm-menu-btn')?.addEventListener('click', async () => {
+  const restaurantId = getRestaurantIdFromUrl();
+  
+  const itemData = {
+    name: document.getElementById('menu-item-name').value,
+    price: parseFloat(document.getElementById('menu-item-price').value),
+    image: document.getElementById('menu-item-image').value,
+    description: document.getElementById('menu-item-desc').value
+  };
+  
+  try {
+    if (editingItemId) {
+      await menuService.updateItem(restaurantId, editingItemId, itemData);
+    } else {
+      await menuService.createItem(restaurantId, itemData);
+    }
+    document.getElementById('menu-item-modal').style.display = 'none';
+    renderMenuItems(restaurantId);
+  } catch (err) {
+    alertService.show(err.message || 'Error guardando item', 'error');
+  }
 });

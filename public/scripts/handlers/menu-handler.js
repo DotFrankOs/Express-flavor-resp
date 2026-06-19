@@ -55,3 +55,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('menu-list').innerHTML = '<p class="error">Error al cargar el menú.</p>';
     }
 });
+
+window.addEventListener('pageshow', (e) => {
+if (e.persisted) {
+    location.reload();
+}
+});

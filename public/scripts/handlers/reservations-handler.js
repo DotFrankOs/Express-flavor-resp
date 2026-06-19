@@ -178,6 +178,7 @@ function renderReservations() {
   
   container.innerHTML = `<div class="reservations-list">${html}</div>`;
 }
+document.dispatchEvent(new CustomEvent('reservations-updated'));
 
 function updateStats() {
   const now = new Date();

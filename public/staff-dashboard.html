@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
   <link rel="stylesheet" href="styles/alert-style.css">
   <script type="module" src="components/app-header.js"></script>
 </head>
+
 <body class="staff-panel">
   <app-header></app-header>
 
@@ -62,6 +64,10 @@
         <img src="images/svg/chart-icon.svg" alt="" class="tab-icon">
         Estadísticas
       </button>
+      <button class="staff-tab" data-tab="menu">
+        <img src="images/svg/food-icon.svg" alt="" class="tab-icon">
+        Menú
+      </button>
     </div>
 
     <section class="staff-tab-content active" id="tab-orders">
@@ -106,13 +112,23 @@
         </div>
       </div>
     </section>
+
+    <section class="staff-tab-content" id="tab-menu">
+      <div class="staff-section-header">
+        <h2>Gestión del Menú</h2>
+        <button class="btn-primary" id="add-menu-item-btn">+ Agregar Item</button>
+      </div>
+      <div id="menu-items-list" class="staff-menu-list">
+        <!-- Se renderiza dinámicamente -->
+      </div>
+    </section>
   </main>
 
   <div id="status-modal" class="modal-overlay" style="display:none;">
     <div class="modal-box status-modal-box">
       <h3>Actualizar estado</h3>
       <p id="status-order-info">Pedido #---</p>
-      
+
       <div class="status-options">
         <button class="status-option" data-status="pending">
           <span class="status-dot pending"></span>
@@ -135,12 +151,12 @@
           Inconveniente
         </button>
       </div>
-      
+
       <div class="form-group" id="issue-note-group" style="display:none;">
         <label>Motivo del inconveniente</label>
         <textarea id="issue-note" rows="3" placeholder="Describe el problema..."></textarea>
       </div>
-      
+
       <div class="modal-actions">
         <button id="confirm-status-btn" class="btn-primary">Guardar</button>
         <button id="cancel-status-btn" class="btn-secondary">Cancelar</button>
@@ -148,6 +164,43 @@
     </div>
   </div>
 
+  <div id="menu-item-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box menu-modal-box">
+      <h3 id="menu-modal-title">Agregar Item</h3>
+
+      <div class="form-group">
+        <label>ID único <span style="color:#ef4444">*</span> <small>(ej: b6, i3, m4)</small></label>
+        <input type="text" id="menu-item-id" placeholder="b6" required>
+      </div>
+
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="menu-item-name" placeholder="Nombre del producto">
+      </div>
+
+      <div class="form-group">
+        <label>Precio base</label>
+        <input type="number" id="menu-item-price" step="0.01" placeholder="0.00">
+      </div>
+
+      <div class="form-group">
+        <label>Imagen (ruta relativa)</label>
+        <input type="text" id="menu-item-image" placeholder="carpeta/imagen.png">
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="menu-item-desc" rows="2"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button id="confirm-menu-btn" class="btn-primary">Guardar</button>
+        <button id="cancel-menu-btn" class="btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="scripts/handlers/staff-handler.js"></script>
 </body>
+
 </html>

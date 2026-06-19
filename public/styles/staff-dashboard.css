@@ -835,3 +835,84 @@ body.staff-panel.restaurant-cafe .live-dot {
     max-width: calc(100% - 40px);
   }
 }
+
+.staff-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.staff-menu-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(117, 86, 60, 0.2);
+  background: rgba(45, 30, 18, 0.6);
+}
+
+.menu-item-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.menu-item-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.menu-item-name {
+  font-weight: 600;
+  color: #f5e6d3;
+  font-size: 1rem;
+}
+
+.menu-item-price {
+  color: #c4a882;
+  font-size: 0.9rem;
+}
+
+.menu-item-status {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.menu-item-status.active {
+  background: rgba(34, 197, 94, 0.15);
+  color: #7dbd7d;
+}
+
+.menu-item-status.inactive {
+  background: rgba(239, 68, 68, 0.15);
+  color: #e0a0a0;
+}
+
+.menu-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.menu-modal-box {
+  max-width: 400px;
+  text-align: left;
+}
+
+.menu-modal-box input,
+.menu-modal-box textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(117, 86, 60, 0.3);
+  background: rgba(45, 30, 18, 0.8);
+  color: #f5e6d3;
+  font-family: inherit;
+  margin-top: 6px;
+  box-sizing: border-box;
+}

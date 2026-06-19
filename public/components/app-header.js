@@ -31,9 +31,39 @@ class AppHeader extends HTMLElement {
       this._boundRefreshReservations = () => this._refreshReservations();
       document.addEventListener('reservations-updated', this._boundRefreshReservations);
       document.addEventListener('order-completed', this._boundOrderCompleted);
+
+      this._boundHandlePageShow = (e) => {
+        if (e.persisted) {
+          this._refreshAll();
+        }
+      };
+      window.addEventListener('pageshow', this._boundHandlePageShow);
+
+      this._boundHandleVisibility = () => {
+        if (document.visibilityState === 'visible') {
+          this._refreshAll();
+        }
+      };
+      document.addEventListener('visibilitychange', this._boundHandleVisibility);
+
     } catch (err) {
       console.error('Error inicializando app-header:', err);
     }
+  }
+
+  async _refreshAll() {
+    await this._loadData();
+    this._renderCartDropdown();
+    this._renderReservationsDropdown();
+    this._renderProfileDropdown();
+    
+    const avatar = this._user?.avatar || 
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(this._user?.name || 'U')}&background=random`;
+    const avatarEl = this.querySelector('#header-avatar');
+    if (avatarEl) avatarEl.src = avatar;
+    
+    const nameEl = this.querySelector('#header-name');
+    if (nameEl) nameEl.textContent = this._user?.name || 'Invitado';
   }
 
   async _loadData() {
@@ -110,11 +140,15 @@ class AppHeader extends HTMLElement {
       }
     });
 
+    // Cerrar dropdowns al hacer click fuera, pero NO si es dentro de un panel o en un select nativo
     document.addEventListener('click', (e) => {
+      // No cerrar si el click fue dentro de un dropdown panel
       if (e.target.closest('.ah-dropdown-panel')) return;
-
+      
+      // No cerrar si el click fue en un botón toggle
       if (e.target.closest('.ah-btn')) return;
       
+      // No cerrar si el click fue en un <select> nativo del navegador
       if (e.target.tagName === 'SELECT') return;
       
       this.querySelectorAll('.ah-dropdown-panel').forEach(d => d.classList.remove('open'));
@@ -127,6 +161,8 @@ class AppHeader extends HTMLElement {
     document.removeEventListener('cart-updated', this._boundRefreshCart);
     document.removeEventListener('order-completed', this._boundOrderCompleted);
     document.removeEventListener('reservations-updated', this._boundRefreshReservations);
+    window.removeEventListener('pageshow', this._boundHandlePageShow);
+    document.removeEventListener('visibilitychange', this._boundHandleVisibility);
   }
 
   _renderCurrencySelector() {
@@ -193,12 +229,14 @@ class AppHeader extends HTMLElement {
     this._updateBadge('cart-badge', count);
   }
 
+  // ========== RESERVAS ACTUALIZADO ==========
   _renderReservationsDropdown() {
     const panel = this.querySelector('#reservations-panel');
     if (!panel) return;
     
     const now = new Date();
     
+    // Ordenar: activas primero (por fecha más cercana), luego pasadas
     const sortedReservations = [...this._reservations].sort((a, b) => {
       const aEnd = new Date(a.endTime);
       const bEnd = new Date(b.endTime);
@@ -210,6 +248,7 @@ class AppHeader extends HTMLElement {
       return new Date(a.startTime) - new Date(b.startTime);
     });
     
+    // Solo contar activas para el badge
     const activeCount = sortedReservations.filter(r => {
       const end = new Date(r.endTime);
       return end > now && r.status !== 'cancelled';
@@ -231,6 +270,7 @@ class AppHeader extends HTMLElement {
       return;
     }
 
+    // Mostrar las 3 más recientes (activas primero)
     const recentReservations = sortedReservations.slice(0, 3);
     
     const itemsHtml = recentReservations.map(r => {
@@ -249,9 +289,11 @@ class AppHeader extends HTMLElement {
         minute: '2-digit' 
       });
       
+      // Calcular duración
       const durationMs = end - start;
       const durationHours = Math.round(durationMs / (1000 * 60 * 60));
       
+      // Estado visual
       let statusDot = '';
       let statusColor = '';
       if (isActive) {
