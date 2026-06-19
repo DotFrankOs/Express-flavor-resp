@@ -45,3 +45,12 @@ exports.deleteItem = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllMenu = async (req, res, next) => {
+  try {
+    const data = await menuService.getAllMenuByRestaurantId(req.params.id);
+    res.json(MenuItemDTO.fromRawList(data));
+  } catch (err) {
+    next(err);
+  }
+};

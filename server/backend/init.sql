@@ -390,3 +390,36 @@ CREATE INDEX IF NOT EXISTS idx_orders_user_status ON orders(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_user_restaurants_user ON user_restaurants(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_restaurants_restaurant ON user_restaurants(restaurant_id);
 CREATE INDEX IF NOT EXISTS idx_reservations_overlap ON reservations(restaurant_id, table_number, status, start_time, end_time);
+
+
+
+
+
+
+
+-- Manager de Italian Taste
+INSERT INTO users ("user", pass, name, email, phone, avatar, role, favorites, orders_count) VALUES
+('italian_manager', 'italian123', 'Gerente Italian', 'italian@expressflavor.com', '+505 7777-1111', 'https://ui-avatars.com/api/?name=Gerente+Italian&background=e74c3c&color=fff&size=128', 'manager', '["italian"]', 5)
+ON CONFLICT ("user") DO NOTHING;
+
+-- Owner de Viva México
+INSERT INTO users ("user", pass, name, email, phone, avatar, role, favorites, orders_count) VALUES
+('mexican_owner', 'mexican123', 'Dueño Viva México', 'mexican@expressflavor.com', '+505 7777-2222', 'https://ui-avatars.com/api/?name=Dueño+Viva+Mexico&background=27ae60&color=fff&size=128', 'owner', '["mexican"]', 8)
+ON CONFLICT ("user") DO NOTHING;
+
+-- Staff de Café Aroma
+INSERT INTO users ("user", pass, name, email, phone, avatar, role, favorites, orders_count) VALUES
+('cafe_staff', 'cafe123', 'Personal Café', 'cafe@expressflavor.com', '+505 7777-3333', 'https://ui-avatars.com/api/?name=Personal+Cafe&background=f39c12&color=fff&size=128', 'staff', '["cafe"]', 3)
+ON CONFLICT ("user") DO NOTHING;
+
+INSERT INTO user_restaurants (user_id, restaurant_id, role) VALUES
+('italian_manager', 'italian', 'manager')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO user_restaurants (user_id, restaurant_id, role) VALUES
+('mexican_owner', 'mexican', 'owner')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO user_restaurants (user_id, restaurant_id, role) VALUES
+('cafe_staff', 'cafe', 'staff')
+ON CONFLICT DO NOTHING;

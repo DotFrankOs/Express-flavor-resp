@@ -249,7 +249,7 @@ async function renderMenuItems(restaurantId) {
   container.innerHTML = '<div class="staff-loading"><div class="spinner"></div><p>Cargando menú...</p></div>';
   
   try {
-    const items = await menuService.getMenu(restaurantId);
+    const items = await menuService.getAllMenu(restaurantId);
     if (items.length === 0) {
       container.innerHTML = '<p class="staff-empty">No hay items en el menú</p>';
       return;
@@ -377,6 +377,67 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeStatusModal();
   });
+
+  document.getElementById('add-menu-item-btn')?.addEventListener('click', () => openMenuModal('create'));
+
+document.getElementById('confirm-menu-btn')?.addEventListener('click', async () => {
+  const restaurantId = getRestaurantIdFromUrl();
+  
+  const itemData = {
+    id: document.getElementById('menu-item-id').value.trim(),
+    name: document.getElementById('menu-item-name').value.trim(),
+    price: parseFloat(document.getElementById('menu-item-price').value),
+    image: document.getElementById('menu-item-image').value.trim() || null,
+    description: document.getElementById('menu-item-desc').value.trim() || null
+  };
+  
+  // Validaciones
+  if (!editingItemId && !itemData.id) {
+    alertService.show('El ID es requerido para crear un item', 'error');
+    return;
+  }
+  
+  if (!itemData.name) {
+    alertService.show('El nombre es requerido', 'error');
+    return;
+  }
+  
+  if (isNaN(itemData.price) || itemData.price <= 0) {
+    alertService.show('El precio debe ser mayor a 0', 'error');
+    return;
+  }
+  
+  try {
+    if (editingItemId) {
+      // En edición: no enviamos el id (no se puede modificar)
+      delete itemData.id;
+      await menuService.updateItem(restaurantId, editingItemId, itemData);
+    } else {
+      // En creación: enviamos el id que el usuario ingresó
+      await menuService.createItem(restaurantId, itemData);
+    }
+    
+    document.getElementById('menu-item-modal').style.display = 'none';
+    editingItemId = null;
+    renderMenuItems(restaurantId);
+    
+  } catch (err) {
+    alertService.show(err.message || 'Error guardando item', 'error');
+  }
+});
+
+document.getElementById('cancel-menu-btn')?.addEventListener('click', () => {
+  document.getElementById('menu-item-modal').style.display = 'none';
+  editingItemId = null;
+});
+
+// Cerrar modal al hacer click fuera
+document.getElementById('menu-item-modal')?.addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('menu-item-modal').style.display = 'none';
+    editingItemId = null;
+  }
+});
 });
 
 let editingItemId = null;
@@ -391,8 +452,8 @@ function openMenuModal(mode = 'create', item = null) {
     title.textContent = 'Editar Item';
     document.getElementById('menu-item-id').value = item.id;
     document.getElementById('menu-item-id').disabled = true;
-    document.getElementById('menu-item-name').value = item.name;
-    document.getElementById('menu-item-price').value = item.price;
+    document.getElementById('menu-item-name').value = item.name || '';
+    document.getElementById('menu-item-price').value = item.price || '';
     document.getElementById('menu-item-image').value = item.image || '';
     document.getElementById('menu-item-desc').value = item.description || '';
     editingItemId = item.id;
@@ -430,27 +491,3 @@ async function handleMenuAction(action, itemId, items) {
     openMenuModal('edit', item);
   }
 }
-
-// Guardar item (crear o editar)
-document.getElementById('confirm-menu-btn')?.addEventListener('click', async () => {
-  const restaurantId = getRestaurantIdFromUrl();
-  
-  const itemData = {
-    name: document.getElementById('menu-item-name').value,
-    price: parseFloat(document.getElementById('menu-item-price').value),
-    image: document.getElementById('menu-item-image').value,
-    description: document.getElementById('menu-item-desc').value
-  };
-  
-  try {
-    if (editingItemId) {
-      await menuService.updateItem(restaurantId, editingItemId, itemData);
-    } else {
-      await menuService.createItem(restaurantId, itemData);
-    }
-    document.getElementById('menu-item-modal').style.display = 'none';
-    renderMenuItems(restaurantId);
-  } catch (err) {
-    alertService.show(err.message || 'Error guardando item', 'error');
-  }
-});

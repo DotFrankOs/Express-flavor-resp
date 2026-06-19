@@ -39,10 +39,8 @@ async function loadReservations() {
   const container = document.getElementById('reservations-list-container');
   
   try {
-    // Cargar todas las reservas del usuario
     currentReservations = await reservationService.getUserReservations();
     
-    // Enriquecer con datos de restaurantes (logos)
     const restaurants = await restaurantService.getAll();
     const restaurantMap = {};
     restaurants.forEach(r => restaurantMap[r.id] = r);
@@ -53,7 +51,6 @@ async function loadReservations() {
       restaurantName: restaurantMap[r.restaurantId]?.name || r.restaurantName || r.restaurantId
     }));
     
-    // Ordenar: activas primero, luego por fecha más cercana
     const now = new Date();
     currentReservations.sort((a, b) => {
       const aEnd = new Date(a.endTime);
@@ -108,7 +105,6 @@ function renderReservations() {
     
     const hasLogo = reservation.restaurantLogo && reservation.restaurantLogo.trim() !== '';
     
-    // Calcular duración en horas
     const durationMs = new Date(reservation.endTime) - new Date(reservation.startTime);
     const durationHours = Math.round(durationMs / (1000 * 60 * 60));
     
@@ -220,7 +216,6 @@ function renderNextReservation() {
     return;
   }
   
-  // La más próxima
   const next = upcoming[0];
   const start = formatDateTime(next.startTime);
   const durationMs = new Date(next.endTime) - new Date(next.startTime);
@@ -235,8 +230,6 @@ function renderNextReservation() {
   
   box.style.display = 'block';
 }
-
-// ========== MODAL CANCELAR ==========
 
 window.openCancelModal = function(code) {
   const reservation = currentReservations.find(r => r.code === code);
@@ -274,7 +267,6 @@ async function confirmCancel() {
       reservationToCancel.startTime
     );
     
-    // Marcar como cancelada localmente (el backend ya lo hace, pero para mock)
     const idx = currentReservations.findIndex(r => r.code === reservationToCancel.code);
     if (idx !== -1) {
       currentReservations[idx].status = 'cancelled';
@@ -287,7 +279,6 @@ async function confirmCancel() {
     updateStats();
     renderNextReservation();
     
-    // Notificar al header que se actualizaron las reservas
     document.dispatchEvent(new CustomEvent('reservations-updated', { bubbles: true }));
     
     alertService.show('Reserva cancelada correctamente', 'success');
@@ -297,8 +288,6 @@ async function confirmCancel() {
     alertService.show('Error al cancelar la reserva', 'error');
   }
 }
-
-// ========== MODAL TICKET ==========
 
 window.showTicket = function(code) {
   const reservation = currentReservations.find(r => r.code === code);
@@ -378,10 +367,8 @@ function printTicket() {
   w.print();
 }
 
-// ========== INICIALIZACIÓN ==========
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Verificar autenticación
   if (!authService.isLoggedIn()) {
     const container = document.getElementById('reservations-list-container');
     container.innerHTML = `
@@ -397,13 +384,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   await currencyService.init();
   await loadReservations();
   
-  // Event listeners de modales
   document.getElementById('close-cancel-btn').addEventListener('click', closeCancelModal);
   document.getElementById('confirm-cancel-btn').addEventListener('click', confirmCancel);
   document.getElementById('close-ticket-btn').addEventListener('click', closeTicketModal);
   document.getElementById('print-ticket-btn').addEventListener('click', printTicket);
   
-  // Cerrar modales al hacer click fuera
   document.getElementById('cancel-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeCancelModal();
   });

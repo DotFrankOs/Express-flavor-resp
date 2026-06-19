@@ -101,6 +101,10 @@ class MenuService {
     );
   }
 
+  async getAllMenuByRestaurantId(restaurantId) {
+    return this.repo.findAllByRestaurantId(restaurantId);
+  }
+
   async deleteItem(restaurantId, itemId) {
     const item = await this.repo.findUnique({ id: itemId });
     if (!item || item.restaurant_id !== restaurantId) {

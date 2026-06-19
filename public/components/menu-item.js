@@ -314,7 +314,7 @@ class MenuItemComponent extends HTMLElement {
             return {
               optionId: opt.id, optionName: opt.name,
               choiceId: chk.value, choiceName: choice?.name || chk.value,
-              extraCost: Number(chk.dataset.price)
+              priceModifier: Number(chk.dataset.price)
             };
           }) : [];
           if (opt.required && checked.length === 0) {
@@ -333,7 +333,7 @@ class MenuItemComponent extends HTMLElement {
             selectedOptions.push({
               optionId: opt.id, optionName: opt.name,
               choiceId: sel.value, choiceName: choice?.name || sel.value,
-              extraCost: Number(sel.selectedOptions[0].dataset.price)
+              priceModifier: Number(sel.selectedOptions[0].dataset.price)
             });
           }
         }
@@ -343,7 +343,7 @@ class MenuItemComponent extends HTMLElement {
     if (!valid) return;
 
     let finalPrice = selectedVariant ? selectedVariant.price : item.price;
-    selectedOptions.forEach(opt => finalPrice += opt.extraCost);
+    selectedOptions.forEach(opt => finalPrice += opt.priceModifier);
 
     let displayName = item.name;
     if (selectedVariant) displayName += ` (${selectedVariant.variantName})`;

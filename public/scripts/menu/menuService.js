@@ -34,5 +34,12 @@ export const menuService = {
     return apiFetch(`/restaurants/${restaurantId}/menu/items/${itemId}`, {
       method: 'DELETE'
     });
+  },
+
+  async getAllMenu(restaurantId) {
+    if (apiConfig.useMock) {
+      return mockMenus[restaurantId] ? [...mockMenus[restaurantId]] : [];
+    }
+    return apiFetch(`/restaurants/${restaurantId}/menu/all`);
   }
 };

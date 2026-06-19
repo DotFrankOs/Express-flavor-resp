@@ -6,6 +6,13 @@ const { menuValidator } = require('../middlewares/validators');
 
 router.get('/restaurants/:id/menu', menuController.getMenu);
 
+router.get(
+  '/restaurants/:id/menu/all',
+  protegerRuta,
+  requireRoles('manager', 'owner', 'admin'),
+  menuController.getAllMenu
+);
+
 router.post(
   '/restaurants/:id/menu/items',
   protegerRuta,
