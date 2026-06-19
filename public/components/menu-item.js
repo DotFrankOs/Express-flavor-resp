@@ -201,7 +201,7 @@ class MenuItemComponent extends HTMLElement {
           </div>
           
           <button class="modal-add-btn" data-action="confirm">
-            <span>🛒</span> Agregar al carrito
+            <img src="images/svg/cart-icon.svg" alt="Carrito" class="modal-cart-icon"> Agregar al carrito
           </button>
           <div class="modal-error"></div>
         </div>

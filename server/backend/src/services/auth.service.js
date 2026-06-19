@@ -77,13 +77,12 @@ class AuthService {
     }
 
     const isValid = await this._comparePassword(password, user.pass);
-    const isLegacyValid = user.pass === password; // Fallback datos legacy
+    const isLegacyValid = user.pass === password;
 
     if (!isValid && !isLegacyValid) {
       throw new ApplicationError('Credenciales inválidas', 401);
     }
 
-    // Migrar contraseña legacy a hash automáticamente
     if (isLegacyValid && !user.pass.startsWith('$2')) {
       const hashed = await this._hashPassword(password);
       await this.repo.update({ user: username }, { pass: hashed });

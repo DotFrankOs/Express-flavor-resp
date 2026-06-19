@@ -16,13 +16,12 @@ class RestaurantCard extends HTMLElement {
 
     const itemsToShow = topItems.slice(0, 2);
 
-    // Generar HTML de productos destacados (versión ancha)
     let productsHtml = '';
     if (itemsToShow.length > 0) {
       productsHtml = `
         <div class="products-section">
           <div class="section-label">
-            <img src="images/tendencia.png" alt="Popular" class="fire-icon">
+            <img src="images/svg/food-icon.svg" alt="Popular" class="fire-icon">
             <span>Los más pedidos</span>
           </div>
           <div class="products-row">

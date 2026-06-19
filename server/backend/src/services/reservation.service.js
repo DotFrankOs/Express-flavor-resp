@@ -1,13 +1,7 @@
 const { reservationRepository, restaurantRepository } = require('../repositories');
 const { generateReservationCode } = require('../utils/id-generator.utils');
 const ApplicationError = require('../domain/errors/application-error');
-
-const TABLE_PRICING = {
-  standard: 0,
-  bar: 0,
-  terraza: 2.00,
-  vip: 5.00
-};
+const { TABLE_PRICING } = require('./table.service');
 
 class ReservationService {
   constructor(repo, restaurantRepo) {

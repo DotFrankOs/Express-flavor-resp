@@ -5,8 +5,9 @@ const createReservationSchema = Joi.object({
   startTime: Joi.date().iso().required(),
   endTime: Joi.date().iso().greater(Joi.ref('startTime')).required(),
   duration: Joi.number().integer().positive().optional(),
-  code: Joi.string().optional().allow(''), // Backend lo genera
-  userId: Joi.string().required()
+  code: Joi.string().optional().allow(''),
+  userId: Joi.string().required(),
+  price: Joi.number().min(0).optional()
 });
 
 const replaceAllSchema = Joi.array().items(
@@ -16,7 +17,8 @@ const replaceAllSchema = Joi.array().items(
     endTime: Joi.date().iso().required(),
     duration: Joi.number().integer().positive().optional(),
     code: Joi.string().optional().allow(''),
-    userId: Joi.string().required()
+    userId: Joi.string().required(),
+    price: Joi.number().min(0).optional()
   })
 );
 

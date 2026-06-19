@@ -403,3 +403,11 @@
 @keyframes scaleOut {
   to { transform: scale(0.9); }
 }
+
+.modal-cart-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 8px;
+  filter: brightness(0) invert(1);
+}

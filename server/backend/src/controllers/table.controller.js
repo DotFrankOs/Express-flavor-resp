@@ -18,3 +18,12 @@ exports.getLayout = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getPricing = async (req, res, next) => {
+  try {
+    const data = await tableService.getPricingByRestaurantId(req.params.id);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};

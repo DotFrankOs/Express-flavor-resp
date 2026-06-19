@@ -4,8 +4,10 @@ const recordPurchaseSchema = Joi.object({
   restaurantId: Joi.string().required(),
   itemId: Joi.string().required(),
   quantity: Joi.number().integer().min(1).default(1),
-  variant: Joi.object({
-    variantId: Joi.string().required()
+    variant: Joi.object({
+    variantId: Joi.string().required(),
+    variantName: Joi.string().optional().allow(''),
+    price: Joi.number().optional()
   }).optional().allow(null),
   options: Joi.array().optional().default([])
 });

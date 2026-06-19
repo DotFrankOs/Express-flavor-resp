@@ -67,3 +67,69 @@
 }
 .loading { color: #666; font-style: italic; }
 .error { color: #d32f2f; }
+
+.selection-summary {
+  background: rgba(25, 118, 210, 0.1);
+  border: 2px solid rgba(25, 118, 210, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 12px auto;
+  max-width: 500px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.selection-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.selection-tables {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.selection-duration {
+  color: #666;
+}
+
+.selection-price {
+  color: #2e7d32;
+  font-weight: 700;
+  font-size: 1.05rem;
+  background: rgba(46, 125, 50, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+#ticket-price-row {
+  color: #2e7d32;
+  font-size: 1.1rem;
+}
+
+#ticket-price {
+  font-weight: 800;
+}
+
+.selection-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+  filter: brightness(0) saturate(100%) invert(30%) sepia(80%) saturate(1000%) hue-rotate(200deg);
+}
+
+.ticket-success-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}

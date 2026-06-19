@@ -40,7 +40,7 @@ class PrismaErrorHandler {
       return { statusCode: 500, message: 'Error en la operación de base de datos' };
     }
 
-    return null; // No pudo manejarlo
+    return null;
   }
 }
 

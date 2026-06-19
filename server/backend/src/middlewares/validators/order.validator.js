@@ -33,7 +33,6 @@ const createOrderSchema = Joi.object({
   restaurantName: Joi.string().required(),
   userId: Joi.string().required(),
   paymentMethod: Joi.string().valid('card', 'cash').default('card')
-  // deliveryCode NO viene del frontend - lo genera el backend
 });
 
 const updateStatusSchema = Joi.object({

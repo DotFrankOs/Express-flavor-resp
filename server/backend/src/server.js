@@ -37,7 +37,7 @@ process.on('unhandledRejection', (reason, promise) => {
   logger.error('Rechazo no manejado:', { reason: reason?.message || reason });
 });
 
-// Start server
+// Iniciar server
 const PORT = config.port;
 const HOST = config.host;
 

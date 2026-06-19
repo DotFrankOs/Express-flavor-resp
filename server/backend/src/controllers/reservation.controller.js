@@ -28,7 +28,6 @@ exports.replaceAll = async (req, res, next) => {
   }
 };
 
-// NUEVO: Cancelar con motivo
 exports.cancel = async (req, res, next) => {
   try {
     const { tableNumber, startTime, reason } = req.body;

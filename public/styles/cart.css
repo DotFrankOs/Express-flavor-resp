@@ -203,3 +203,11 @@ global-cart {
   background: #e64a19;
   transform: translateY(-1px);
 }
+
+.cart-header-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 6px;
+  filter: brightness(0) saturate(100%) invert(40%) sepia(10%) saturate(500%) hue-rotate(180deg);
+}

@@ -12,17 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = "index.html";
     }
 
-    const currentUser = authService.getCurrentUser();
-    if (currentUser) {
-        const userNameEl = document.getElementById('current-user-name');
-        if (userNameEl) userNameEl.textContent = currentUser.name || currentUser.user;
-    }
-
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => authService.logout());
-    }
-
     const restaurantId = getRestaurantIdFromUrl();
     
     try {

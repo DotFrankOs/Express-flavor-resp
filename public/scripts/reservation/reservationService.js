@@ -1,6 +1,7 @@
 import { apiConfig } from '../config/apiConfig.js';
 import { apiFetch } from '../utils/apiFetch.js';
 import { mockReservations, mockRestaurants } from '../data/mockData.js';
+import { tableConfigService } from '../tables/tableConfigService.js';
 
 const STORAGE_PREFIX = 'reservations_';
 
@@ -100,6 +101,11 @@ export const reservationService = {
     return occupied;
   },
 
+  async getTablePrice(restaurantId, tableNumber) {
+    await tableConfigService.getConfig(restaurantId);
+    return tableConfigService.getTablePrice(restaurantId, tableNumber);
+  },
+
   async reserve(restaurantId, tableNumber, startTime, durationHours) {
     const reservations = await this.getAll(restaurantId);
     const endTime = new Date(startTime.getTime() + durationHours * 60 * 60 * 1000);
@@ -115,13 +121,16 @@ export const reservationService = {
       return { success: false, message: 'La mesa ya está reservada en ese horario' };
     }
 
+    const tablePrice = await this.getTablePrice(restaurantId, tableNumber);
+
     const cleanReservations = reservations.map(r => ({
       number: r.number,
       startTime: r.startTime,
       endTime: r.endTime,
       duration: r.duration,
       code: r.code,
-      userId: r.userId
+      userId: r.userId,
+      price: r.price || 0
     }));
 
     const newReservation = {
@@ -130,7 +139,8 @@ export const reservationService = {
       endTime: endTime.toISOString(),
       duration: durationHours,
       code: _generateCode(),
-      userId: _getUser()
+      userId: _getUser(),
+      price: tablePrice
     };
 
     cleanReservations.push(newReservation);
@@ -138,27 +148,36 @@ export const reservationService = {
 
     return { success: true, reservation: newReservation };
   },
+
   async cancel(restaurantId, tableNumber, startTime) {
-    const reservations = await this.getAll(restaurantId);
-    const idx = reservations.findIndex(
-      r => r.number === tableNumber && r.startTime === startTime
-    );
-    if (idx === -1) {
-      return { success: false, message: 'Reserva no encontrada' };
+    if (apiConfig.useMock) {
+      const reservations = await this.getAll(restaurantId);
+      const idx = reservations.findIndex(
+        r => r.number === tableNumber && r.startTime === startTime
+      );
+      if (idx === -1) {
+        return { success: false, message: 'Reserva no encontrada' };
+      }
+      reservations.splice(idx, 1);
+      
+      const cleanReservations = reservations.map(r => ({
+        number: r.number,
+        startTime: r.startTime,
+        endTime: r.endTime,
+        duration: r.duration,
+        code: r.code,
+        userId: r.userId,
+        price: r.price || 0
+      }));
+      
+      await this.saveAll(restaurantId, cleanReservations);
+      return { success: true };
     }
-    reservations.splice(idx, 1);
     
-    const cleanReservations = reservations.map(r => ({
-      number: r.number,
-      startTime: r.startTime,
-      endTime: r.endTime,
-      duration: r.duration,
-      code: r.code,
-      userId: r.userId
-    }));
-    
-    await this.saveAll(restaurantId, cleanReservations);
-    return { success: true };
+    return apiFetch(`/restaurants/${restaurantId}/reservations/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ tableNumber, startTime, reason: 'Cancelada por usuario' })
+    });
   },
 
   seedIfEmpty(restaurantId, defaultData = []) {
@@ -170,7 +189,7 @@ export const reservationService = {
   },
 
   async getUserReservations() {
-  const userId = _getUser();
+    const userId = _getUser();
 
     if (!apiConfig.useMock) {
       return apiFetch('/reservations/my', {
@@ -179,7 +198,6 @@ export const reservationService = {
     }
     const all = [];
 
-    // Iterar todos los restaurantes conocidos en mock
     const restaurantIds = ['burgers', 'italian', 'mexican', 'cafe'];
     for (const rid of restaurantIds) {
       const list = _load(rid);
@@ -188,14 +206,11 @@ export const reservationService = {
         all.push({
           ...r,
           restaurantId: rid,
-          // Buscamos el nombre del restaurante en mockRestaurants
           restaurantName: mockRestaurants.find(x => x.id === rid)?.name || rid
         });
       });
     }
 
-    // Ordenar: las más próximas primero
     return all.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
   }
-    
 };

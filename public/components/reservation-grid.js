@@ -2,6 +2,7 @@ import { reservationService } from '../scripts/reservation/reservationService.js
 import { authService } from '../scripts/auth/authService.js';
 import { tableConfigService } from '../scripts/tables/tableConfigService.js';
 import { alertService } from '../scripts/alert/alertService.js';
+import { currencyService } from '../scripts/currency/currencyService.js';
 import './table-item.js';
 
 class ReservationGrid extends HTMLElement {
@@ -14,6 +15,7 @@ class ReservationGrid extends HTMLElement {
     this.maxDuration = 2;
     this.selectedDuration = 2;
     this._config = null;
+    this._pricing = {};
   }
 
   async connectedCallback() {
@@ -29,12 +31,13 @@ class ReservationGrid extends HTMLElement {
     
     try {
       this._config = await tableConfigService.getConfig(this.restaurantId);
+      this._pricing = this._config.pricing || {};
       this.render();
       this.addEvents();
     } catch (err) {
       this.innerHTML = '<p class="error">Error al cargar mesas</p>';
     }
-}
+  }
 
   getCurrentUserId() {
     const user = authService.getCurrentUser();
@@ -61,6 +64,7 @@ class ReservationGrid extends HTMLElement {
             this.selectedTables.add(tableId);
             tableItem.setAttribute('selected', '');
           }
+          this._updateSelectionSummary();
           return;
         }
 
@@ -73,6 +77,8 @@ class ReservationGrid extends HTMLElement {
             const result = await reservationService.cancel(this.restaurantId, tableId, startTime);
             if (!result.success) {
               alertService.show(result.message, 'error');
+            } else {
+              this._notifyReservationChange();
             }
             this.selectedTables.clear();
             await this.renderTables();
@@ -101,6 +107,7 @@ class ReservationGrid extends HTMLElement {
         this.selectedStart = e.target.value ? new Date(e.target.value) : null;
         this.selectedTables.clear();
         await this.renderTables();
+        this._updateSelectionSummary();
       }
 
       if (e.target.id === 'duration-picker') {
@@ -109,6 +116,7 @@ class ReservationGrid extends HTMLElement {
           this.selectedDuration = val;
           this.selectedTables.clear();
           await this.renderTables();
+          this._updateSelectionSummary();
         }
       }
     });
@@ -116,6 +124,46 @@ class ReservationGrid extends HTMLElement {
 
   getEndTime(start) {
     return new Date(start.getTime() + this.selectedDuration * 60 * 60 * 1000);
+  }
+
+  _calculateTotalPrice() {
+    let total = 0;
+    for (const tableId of this.selectedTables) {
+      total += this._pricing[tableId] || 0;
+    }
+    return total;
+  }
+
+  _updateSelectionSummary() {
+    const summaryEl = this.querySelector('#selection-summary');
+    if (!summaryEl) return;
+
+    if (this.selectedTables.size === 0 || !this.selectedStart) {
+      summaryEl.style.display = 'none';
+      return;
+    }
+
+    const totalPrice = this._calculateTotalPrice();
+    const tableLabels = Array.from(this.selectedTables).map(id => {
+      const table = this._config.tables.find(t => t.id === id);
+      return table ? (table.label || `Mesa ${id}`) : `Mesa ${id}`;
+    });
+
+    summaryEl.style.display = 'block';
+    summaryEl.innerHTML = `
+      <div class="selection-info">
+        <span class="selection-tables"><img src="images/svg/store-icon.svg" alt="Mesas" class="selection-icon"> ${tableLabels.join(', ')}</span>
+        <span class="selection-duration"><img src="images/svg/clock-icon.svg" alt="Duración" class="selection-icon"> ${this.selectedDuration} hora${this.selectedDuration > 1 ? 's' : ''}</span>
+        ${totalPrice > 0 ? `<span class="selection-price"><img src="images/svg/money-icon.svg" alt="Precio" class="selection-icon"> ${currencyService.formatPrice(totalPrice)}</span>` : ''}
+      </div>
+    `;
+  }
+
+  _notifyReservationChange() {
+    document.dispatchEvent(new CustomEvent('reservations-updated', { 
+      bubbles: true,
+      composed: true 
+    }));
   }
 
   async confirmReservation() {
@@ -139,6 +187,14 @@ class ReservationGrid extends HTMLElement {
       }
     }
 
+    const totalPrice = this._calculateTotalPrice();
+    let confirmMessage = `¿Confirmar reserva de ${this.selectedTables.size} mesa(s) por ${this.selectedDuration} hora(s)?`;
+    if (totalPrice > 0) {
+      confirmMessage += `\n\nCosto total: ${currencyService.formatPrice(totalPrice)}`;
+    }
+
+    if (!await alertService.confirm(confirmMessage)) return;
+
     for (const tableNumber of this.selectedTables) {
       const result = await reservationService.reserve(
         this.restaurantId,
@@ -147,7 +203,7 @@ class ReservationGrid extends HTMLElement {
         this.selectedDuration
       );
       if (result.success) {
-        this.showTicket(tableNumber, result.reservation.code, start, end);
+        this.showTicket(tableNumber, result.reservation.code, start, end, result.reservation.price);
       } else {
         alertService.show(result.message, 'error');
       }
@@ -155,14 +211,29 @@ class ReservationGrid extends HTMLElement {
 
     this.selectedTables.clear();
     await this.renderTables();
+    this._updateSelectionSummary();
+    
+    this._notifyReservationChange();
   }
 
-  showTicket(tableNumber, code, start, end) {
+  showTicket(tableNumber, code, start, end, price) {
     const modal = this.querySelector('#ticket-modal');
     this.querySelector('#ticket-table-number').textContent = tableNumber;
     this.querySelector('#ticket-code').textContent = code;
     this.querySelector('#ticket-datetime').textContent =
       `${start.toLocaleString()} – ${end.toLocaleTimeString()}`;
+    
+    const priceEl = this.querySelector('#ticket-price');
+    const priceRow = this.querySelector('#ticket-price-row');
+    if (priceEl && priceRow) {
+      if (price && price > 0) {
+        priceEl.textContent = currencyService.formatPrice(price);
+        priceRow.style.display = 'block';
+      } else {
+        priceRow.style.display = 'none';
+      }
+    }
+    
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -179,12 +250,19 @@ class ReservationGrid extends HTMLElement {
     const table = this.querySelector('#ticket-table-number').textContent;
     const code = this.querySelector('#ticket-code').textContent;
     const datetime = this.querySelector('#ticket-datetime').textContent;
+    const priceEl = this.querySelector('#ticket-price');
+    const priceRow = this.querySelector('#ticket-price-row');
+    const price = priceRow && priceRow.style.display !== 'none' && priceEl 
+      ? priceEl.textContent 
+      : 'Gratis';
+    
     const html = `
       <div style="font-family:Arial; padding:20px; text-align:center;">
         <h2>Ticket de Reserva</h2>
         <p>Mesa: <strong>${table}</strong></p>
         <p>Horario: <strong>${datetime}</strong></p>
         <p>Código: <strong>${code}</strong></p>
+        <p>Costo: <strong>${price}</strong></p>
         <p style="font-size:0.85rem">Muéstralo al llegar.</p>
       </div>`;
     const w = window.open('', '_blank', 'width=400,height=400');
@@ -242,6 +320,8 @@ class ReservationGrid extends HTMLElement {
       }
 
       const selected = this.selectedTables.has(i) ? 'selected' : '';
+      const price = this._pricing[i] || 0;
+      const priceAttr = price > 0 ? `data-price="${price}"` : '';
 
       html += `
         <table-item
@@ -250,6 +330,7 @@ class ReservationGrid extends HTMLElement {
           table-style="${table.style || 'standard'}"
           status="${status}"
           ${selected ? 'selected' : ''}
+          ${priceAttr}
           ${extraAttrs}>
         </table-item>
       `;
@@ -286,6 +367,9 @@ class ReservationGrid extends HTMLElement {
             (Reserva entre ${this.minDuration} y ${this.maxDuration} horas)
           </small>
         </div>
+        
+        <div id="selection-summary" class="selection-summary" style="display:none;"></div>
+        
         <div class="table-grid"></div>
         <button id="confirm-reservation-btn">Confirmar Reserva</button>
       </div>
@@ -293,10 +377,11 @@ class ReservationGrid extends HTMLElement {
       <div id="ticket-modal" aria-hidden="true">
         <div id="ticket-overlay"></div>
         <div class="modal-box">
-          <h3> Reserva Guardada</h3>
+          <h3><img src="images/svg/success-icon.svg" alt="Éxito" class="ticket-success-icon"> Reserva Guardada</h3>
           <p>Mesa: <strong><span id="ticket-table-number">-</span></strong></p>
           <p>Horario: <strong><span id="ticket-datetime">-</span></strong></p>
           <p>Código: <strong><span id="ticket-code">-</span></strong></p>
+          <p id="ticket-price-row" style="display:none;">Costo: <strong><span id="ticket-price">-</span></strong></p>
           <p style="font-size:0.9rem;">Muestra este código al llegar.</p>
           <button id="print-ticket-btn" class="alert-btn" style="margin-right:8px;">Imprimir</button>
           <button id="close-ticket-btn" class="alert-btn secondary">Cerrar</button>
@@ -305,7 +390,7 @@ class ReservationGrid extends HTMLElement {
     `;
 
     await this.renderTables();
-    }
+  }
 
   _generateDurationOptions() {
     let options = '';

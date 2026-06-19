@@ -28,6 +28,8 @@ class AppHeader extends HTMLElement {
       document.addEventListener('cart-updated', this._boundRefreshCart);
       
       this._boundOrderCompleted = () => this._refreshOrders();
+      this._boundRefreshReservations = () => this._refreshReservations();
+      document.addEventListener('reservations-updated', this._boundRefreshReservations);
       document.addEventListener('order-completed', this._boundOrderCompleted);
     } catch (err) {
       console.error('Error inicializando app-header:', err);
@@ -52,11 +54,23 @@ class AppHeader extends HTMLElement {
   async _refreshOrders() {
     if (!this._user) return;
     this._orders = await statsService.getUserOrders();
+    this._reservations = await reservationService.getUserReservations();
     this._renderReservationsDropdown();
     this._renderProfileDropdown();
     
     const now = new Date();
-    const upcoming = this._reservations.filter(r => new Date(r.endTime) > now);
+    const upcoming = this._reservations.filter(r => new Date(r.endTime) > now && r.status !== 'cancelled');
+    this._updateBadge('reservations-badge', upcoming.length);
+  }
+
+  async _refreshReservations() {
+    if (!this._user) return;
+    this._reservations = await reservationService.getUserReservations();
+    this._renderReservationsDropdown();
+    this._renderProfileDropdown();
+    
+    const now = new Date();
+    const upcoming = this._reservations.filter(r => new Date(r.endTime) > now && r.status !== 'cancelled');
     this._updateBadge('reservations-badge', upcoming.length);
   }
 
@@ -87,7 +101,26 @@ class AppHeader extends HTMLElement {
       });
     });
 
-    document.addEventListener('click', () => {
+    this.addEventListener('change', (e) => {
+      if (e.target.id === 'header-currency-selector') {
+        e.stopPropagation();
+        const newCurrency = e.target.value;
+        currencyService.setCurrency(newCurrency);
+        window.location.reload();
+      }
+    });
+
+    // Cerrar dropdowns al hacer click fuera, pero NO si es dentro de un panel o en un select nativo
+    document.addEventListener('click', (e) => {
+      // No cerrar si el click fue dentro de un dropdown panel
+      if (e.target.closest('.ah-dropdown-panel')) return;
+      
+      // No cerrar si el click fue en un botón toggle
+      if (e.target.closest('.ah-btn')) return;
+      
+      // No cerrar si el click fue en un <select> nativo del navegador
+      if (e.target.tagName === 'SELECT') return;
+      
       this.querySelectorAll('.ah-dropdown-panel').forEach(d => d.classList.remove('open'));
     });
 
@@ -97,6 +130,28 @@ class AppHeader extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener('cart-updated', this._boundRefreshCart);
     document.removeEventListener('order-completed', this._boundOrderCompleted);
+    document.removeEventListener('reservations-updated', this._boundRefreshReservations);
+  }
+
+  _renderCurrencySelector() {
+    const currencies = currencyService.getAvailableCurrencies();
+    const current = currencyService.getCurrency();
+
+    return `
+      <div class="ah-currency-section" onclick="event.stopPropagation()">
+        <div class="ah-profile-section-title">
+          <img src="images/svg/money-icon.svg" alt="Moneda" class="ah-section-icon">
+          Moneda
+        </div>
+        <select id="header-currency-selector" class="ah-currency-select">
+          ${currencies.map(c => `
+            <option value="${c.code}" ${c.code === current ? 'selected' : ''}>
+              ${c.symbol} ${c.code}
+            </option>
+          `).join('')}
+        </select>
+      </div>
+    `;
   }
 
   _renderCartDropdown() {
@@ -142,43 +197,119 @@ class AppHeader extends HTMLElement {
     this._updateBadge('cart-badge', count);
   }
 
+  // ========== RESERVAS ACTUALIZADO ==========
   _renderReservationsDropdown() {
     const panel = this.querySelector('#reservations-panel');
     if (!panel) return;
+    
     const now = new Date();
-    const upcoming = this._reservations.filter(r => new Date(r.endTime) > now);
-    this._updateBadge('reservations-badge', upcoming.length);
+    
+    // Ordenar: activas primero (por fecha más cercana), luego pasadas
+    const sortedReservations = [...this._reservations].sort((a, b) => {
+      const aEnd = new Date(a.endTime);
+      const bEnd = new Date(b.endTime);
+      const aActive = aEnd > now && a.status !== 'cancelled';
+      const bActive = bEnd > now && b.status !== 'cancelled';
+      
+      if (aActive && !bActive) return -1;
+      if (!aActive && bActive) return 1;
+      return new Date(a.startTime) - new Date(b.startTime);
+    });
+    
+    // Solo contar activas para el badge
+    const activeCount = sortedReservations.filter(r => {
+      const end = new Date(r.endTime);
+      return end > now && r.status !== 'cancelled';
+    }).length;
+    
+    this._updateBadge('reservations-badge', activeCount);
 
-    if (upcoming.length === 0) {
+    if (sortedReservations.length === 0) {
       panel.innerHTML = `
         <div class="ah-dropdown-empty">
           <img src="images/svg/calendar-empty.svg" alt="Sin reservas" class="ah-empty-icon">
-          No tenés reservas activas
+          No tenés reservas
         </div>
+        <a href="restaurantes.html" class="ah-dropdown-btn" style="margin-top:12px;text-align:center;display:block;text-decoration:none;">
+          <img src="images/svg/store-icon.svg" alt="" class="ah-btn-icon">
+          Hacer una reserva
+        </a>
       `;
       return;
     }
 
-    const itemsHtml = upcoming.slice(0, 5).map(r => {
+    // Mostrar las 3 más recientes (activas primero)
+    const recentReservations = sortedReservations.slice(0, 3);
+    
+    const itemsHtml = recentReservations.map(r => {
       const start = new Date(r.startTime);
-      const dateStr = start.toLocaleDateString();
-      const timeStr = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const end = new Date(r.endTime);
+      const isActive = end > now && r.status !== 'cancelled';
+      const isPast = end < now && r.status !== 'cancelled';
+      const isCancelled = r.status === 'cancelled';
+      
+      const dateStr = start.toLocaleDateString('es-ES', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const timeStr = start.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      
+      // Calcular duración
+      const durationMs = end - start;
+      const durationHours = Math.round(durationMs / (1000 * 60 * 60));
+      
+      // Estado visual
+      let statusDot = '';
+      let statusColor = '';
+      if (isActive) {
+        statusDot = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:6px;"></span>';
+        statusColor = 'color:#7dbd7d;';
+      } else if (isPast) {
+        statusDot = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#6b7280;margin-right:6px;"></span>';
+        statusColor = 'color:#9ca3af;';
+      } else if (isCancelled) {
+        statusDot = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ef4444;margin-right:6px;"></span>';
+        statusColor = 'color:#e0a0a0;';
+      }
+      
+      const price = r.price || 0;
+      const priceText = price > 0 ? currencyService.formatPrice(price) : 'Gratis';
+      
       return `
         <div class="ah-dropdown-item">
           <div class="ah-dropdown-item-main">
-            <span class="ah-dropdown-item-name">Mesa ${r.number}</span>
-            <span class="ah-dropdown-item-tag">${r.restaurantName}</span>
+            <span class="ah-dropdown-item-name">
+              ${statusDot}
+              Mesa ${r.number}
+            </span>
+            <span class="ah-dropdown-item-tag" style="font-size:0.7rem;background:${isActive ? 'rgba(34,197,94,0.15)' : isPast ? 'rgba(107,114,128,0.15)' : 'rgba(239,68,68,0.15)'};color:${isActive ? '#7dbd7d' : isPast ? '#9ca3af' : '#e0a0a0'};padding:2px 8px;border-radius:10px;">
+              ${isActive ? 'Activa' : isPast ? 'Finalizada' : 'Cancelada'}
+            </span>
           </div>
-          <div class="ah-dropdown-item-meta">
-            ${dateStr} · ${timeStr} · Código: <strong>${r.code}</strong>
+          <div class="ah-dropdown-item-meta" style="${statusColor}">
+            ${r.restaurantName || ''} · ${dateStr} · ${timeStr}
+          </div>
+          <div class="ah-dropdown-item-meta" style="color: #2e7d32; font-weight: 600; margin-top: 2px; font-size: 0.8rem;">
+            ${priceText} · ${durationHours}h
           </div>
         </div>
       `;
     }).join('');
 
+    const moreCount = sortedReservations.length - 3;
+    const moreText = moreCount > 0 ? `<div class="ah-dropdown-more">+${moreCount} reserva${moreCount > 1 ? 's' : ''} más</div>` : '';
+
     panel.innerHTML = `
-      <div class="ah-dropdown-title">Tus reservas</div>
+      <div class="ah-dropdown-title">Tus reservas (${activeCount} activa${activeCount !== 1 ? 's' : ''})</div>
       ${itemsHtml}
+      ${moreText}
+      <a href="reservations.html" class="ah-dropdown-btn" style="margin-top:14px;text-align:center;display:block;text-decoration:none;">
+        <img src="images/svg/calendar-icon.svg" alt="Reservas" class="ah-btn-icon">
+        Ver todas mis reservas
+      </a>
     `;
   }
 
@@ -236,7 +367,7 @@ class AppHeader extends HTMLElement {
         </div>
       `;
     }
-
+    const currencySelector = this._renderCurrencySelector();
     const staffLink = this._isStaff ? `
       <a href="staff-dashboard.html" class="ah-dropdown-btn ah-staff-link" style="margin-bottom:8px;text-align:center;display:block;text-decoration:none;background:linear-gradient(135deg,#8B4513,#A0522D);border-color:#D2691E;color:#f5e6d3;">
         <img src="images/svg/staff-icon.svg" alt="Staff" class="ah-btn-icon" style="filter:brightness(0)invert(1);">
@@ -246,37 +377,38 @@ class AppHeader extends HTMLElement {
 
     const roleLabel = getRoleLabel(this._user.role);
 
-    panel.innerHTML = `
-      <div class="ah-profile-header">
-        <img src="${avatar}" alt="" class="ah-profile-avatar-lg">
-        <div>
-          <div class="ah-profile-name">${this._user.name}</div>
-          <div class="ah-profile-email">${this._user.email || ''}</div>
-          <div class="ah-profile-role" data-role="${this._user.role || 'customer'}">${roleLabel}</div>
-        </div>
-      </div>
-      <div class="ah-profile-stats">
-        <div>
-          <strong>${this._orders.length}</strong>
-          <span>Pedidos</span>
-        </div>
-        <div>
-          <strong>${(this._user.favorites || []).length}</strong>
-          <span>Favoritos</span>
-        </div>
-        <div>
-          <strong>${totalItemsBought}</strong>
-          <span>Compras</span>
-        </div>
-      </div>
-      ${itemsHtml}
-      ${staffLink}
-      <a href="orders.html" class="ah-dropdown-btn" style="margin-bottom:8px;text-align:center;display:block;text-decoration:none;">
-        <img src="images/svg/orders-icon.svg" alt="Órdenes" class="ah-btn-icon">
-        Ver todos mis pedidos
-      </a>
-      <button id="header-logout" class="ah-dropdown-btn ah-secondary">Cerrar sesión</button>
-    `;
+        panel.innerHTML = `
+          <div class="ah-profile-header">
+            <img src="${avatar}" alt="" class="ah-profile-avatar-lg">
+            <div>
+              <div class="ah-profile-name">${this._user.name}</div>
+              <div class="ah-profile-email">${this._user.email || ''}</div>
+              <div class="ah-profile-role" data-role="${this._user.role || 'customer'}">${roleLabel}</div>
+            </div>
+          </div>
+          <div class="ah-profile-stats">
+            <div>
+              <strong>${this._orders.length}</strong>
+              <span>Pedidos</span>
+            </div>
+            <div>
+              <strong>${(this._user.favorites || []).length}</strong>
+              <span>Favoritos</span>
+            </div>
+            <div>
+              <strong>${totalItemsBought}</strong>
+              <span>Compras</span>
+            </div>
+          </div>
+          ${itemsHtml}
+          ${currencySelector}
+          ${staffLink}
+          <a href="orders.html" class="ah-dropdown-btn" style="margin-bottom:8px;text-align:center;display:block;text-decoration:none;">
+            <img src="images/svg/orders-icon.svg" alt="Órdenes" class="ah-btn-icon">
+            Ver todos mis pedidos
+          </a>
+          <button id="header-logout" class="ah-dropdown-btn ah-secondary">Cerrar sesión</button>
+        `;
   }
 
   render() {

@@ -178,7 +178,8 @@ class CartComponent extends HTMLElement {
     this.innerHTML = `
       <div class="cart-container">
         <div class="cart-header">
-          <h3>🛒 Carrito ${count > 0 ? `<span class="cart-badge">${count}</span>` : ''}</h3>
+          <h3><img src="images/svg/cart-icon.svg" alt="Carrito" class="cart-header-icon"> 
+          Carrito ${count > 0 ? `<span class="cart-badge">${count}</span>` : ''}</h3>
           ${count > 0 ? `<button class="clear-btn" data-action="clear">Vaciar</button>` : ''}
         </div>
 
